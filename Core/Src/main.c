@@ -68,7 +68,10 @@ static void MX_ADC1_Init(void);
 void        StartDefaultTask(void* argument);
 
 /* USER CODE BEGIN PFP */
+extern void main_setup(void);
+extern void main_loop(void);
 
+extern void main_default_task();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -113,8 +116,6 @@ int main(void)
      * @brief
      * TODO LIST
      * ! First part:
-     * * - Plan how to mount STM32 on the car
-     * * - Start assembling the motor and put all componments in place
      * * - Finish assembling the lower part of the car (motors in this case)
      * * - Write test code to check if it works (simple)
      * ! Second part:
@@ -124,6 +125,8 @@ int main(void)
      *
      * ?--> Once done we will start on other tasks (bluetooth in this case)
      */
+
+    main_setup();
 
     /* USER CODE END 2 */
 
@@ -167,6 +170,7 @@ int main(void)
     /* USER CODE BEGIN WHILE */
     while (1)
     {
+        main_loop();
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
@@ -401,7 +405,7 @@ static void MX_GPIO_Init(void)
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-    /*Configure GPIO pins : LD2_Pin MOTOR2_2_Pin MOTOR_1_1_Pin */
+    /*Configure GPIO pins : LD2_Pin MOTOR2_2_Pin MOTOR1_1_Pin */
     GPIO_InitStruct.Pin   = LD2_Pin | MOTOR2_2_Pin | MOTOR1_1_Pin;
     GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull  = GPIO_NOPULL;
@@ -429,6 +433,13 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
+// /* Infinite loop */
+// for (;;)
+// {
+//     default_task();
+//     osDelay(1);
+// }
+
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_StartDefaultTask */
@@ -441,11 +452,7 @@ static void MX_GPIO_Init(void)
 void StartDefaultTask(void* argument)
 {
     /* USER CODE BEGIN 5 */
-    /* Infinite loop */
-    for (;;)
-    {
-        osDelay(1);
-    }
+    main_default_task();
     /* USER CODE END 5 */
 }
 
