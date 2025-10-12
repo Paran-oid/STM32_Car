@@ -1,5 +1,13 @@
 {
 	"cmake.cmakePath": "cube-cmake",
 	"cmake.configureArgs": ["-DCMAKE_COMMAND=cube-cmake"],
-	"cmake.preferredGenerators": ["Ninja"]
+	"cmake.preferredGenerators": ["Ninja"],
+	"files.associations": {
+		"*.dbclient-js": "javascript",
+		"*.embeddedhtml": "html",
+		"*.asm": "asm-intel-x86-generic",
+		"compare": "cpp",
+		"cstdint": "cpp",
+		"type_traits": "cpp"
+	}
 }

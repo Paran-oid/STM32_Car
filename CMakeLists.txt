@@ -51,11 +51,18 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     Core/Src/main.cpp
+
+    Core/Src/drivers/vs1838.cpp
+
+    Core/Src/cxx_abstractions/gpio.cpp
+    Core/Src/cxx_abstractions/timer.cpp
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
+    Core/Inc/drivers
+    Core/Inc/cxx_abstractions
 )
 
 # Add project symbols (macros)

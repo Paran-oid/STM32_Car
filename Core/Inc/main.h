@@ -69,6 +69,8 @@ void Error_Handler(void);
 #define LD2_GPIO_Port GPIOA
 #define MOTOR2_2_Pin GPIO_PIN_7
 #define MOTOR2_2_GPIO_Port GPIOA
+#define MOTOR2_SPEED_Pin GPIO_PIN_0
+#define MOTOR2_SPEED_GPIO_Port GPIOB
 #define MOTOR1_2_Pin GPIO_PIN_7
 #define MOTOR1_2_GPIO_Port GPIOC
 #define MOTOR1_1_Pin GPIO_PIN_9
@@ -79,6 +81,8 @@ void Error_Handler(void);
 #define TCK_GPIO_Port GPIOA
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
+#define MOTOR1_SPEED_Pin GPIO_PIN_5
+#define MOTOR1_SPEED_GPIO_Port GPIOB
 #define MOTOR2_1_Pin GPIO_PIN_6
 #define MOTOR2_1_GPIO_Port GPIOB
 
