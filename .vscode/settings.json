@@ -8,6 +8,10 @@
 		"*.asm": "asm-intel-x86-generic",
 		"compare": "cpp",
 		"cstdint": "cpp",
-		"type_traits": "cpp"
+		"type_traits": "cpp",
+		"algorithm": "cpp",
+		"format": "cpp",
+		"chrono": "cpp",
+		"ratio": "cpp"
 	}
 }

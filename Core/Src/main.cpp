@@ -5,7 +5,9 @@ extern "C"
 #include "cmsis_os2.h"
 }
 
-#include "timer.hpp"
+#include "gpio.hpp"
+#include "irremote.hpp"
+#include "ptimer.hpp"
 
 extern UART_HandleTypeDef huart2;
 
@@ -14,7 +16,8 @@ extern TIM_HandleTypeDef htim3;
 
 extern UART_HandleTypeDef huart2;
 
-Timer<uint32_t> tim2 {htim2};  // used for precise delays
+PTimer<uint32_t> tim2 {htim2};  // used for precise delays
+PTimer<uint32_t> tim3 {htim3};  // pwm-related
 
 //
 // Main thread
@@ -22,11 +25,9 @@ Timer<uint32_t> tim2 {htim2};  // used for precise delays
 void setup()
 {
     /**
-     * @brief
      * TODO LIST
-     * * - TEST API THAT I'VE WRITTEN
      * ! Second part:
-     * * - write driver for IR decoder
+     * * - Test driver for IR decoder
      * * - Write logic for motors.c (all possible movements)
      * * - Test car with new added logic
      *
@@ -38,8 +39,10 @@ void setup()
      * ?--> Once done we will start on other tasks (bluetooth in this case)
      */
 
-    HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);  // start motor 1
-    HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);  //  start motor 2
+    tim2.start();
+
+    tim3.pwm_start(TIM_CHANNEL_2);
+    tim3.pwm_start(TIM_CHANNEL_3);
 }
 
 // should never be reached

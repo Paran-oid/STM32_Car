@@ -52,10 +52,10 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     Core/Src/main.cpp
 
-    Core/Src/drivers/vs1838.cpp
+    Core/Src/drivers/irremote.cpp
 
     Core/Src/cxx_abstractions/gpio.cpp
-    Core/Src/cxx_abstractions/timer.cpp
+    Core/Src/cxx_abstractions/ptimer.cpp
 )
 
 # Add include paths
