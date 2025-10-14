@@ -10,7 +10,7 @@ extern "C"
 #include "gpio.hpp"
 
 /**
- * @brief precise (micro second level) 32-bit timer
+ * @brief precise (micro second level) 32/16-bit timer
  * @note it's assumed that timers use internal clock of MCU
  */
 

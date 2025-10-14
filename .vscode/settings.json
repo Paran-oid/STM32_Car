@@ -12,6 +12,11 @@
 		"algorithm": "cpp",
 		"format": "cpp",
 		"chrono": "cpp",
-		"ratio": "cpp"
+		"ratio": "cpp",
+		"cmsis_os.h": "c",
+		"deque": "cpp",
+		"list": "cpp",
+		"string": "cpp",
+		"vector": "cpp"
 	}
 }

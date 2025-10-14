@@ -2,18 +2,27 @@
 
 uint8_t IRRemote::read_byte()
 {
-    uint8_t res = 0;
-    uint8_t bit;
+    uint8_t res, bit;
+    res = bit = 0;
     for (uint8_t i = 0; i < 8; i++)
     {
         while (m_gpio.get() != HIGH);
 
-        if (m_htim.delay_until(m_gpio, LOW, 620))
-            bit = 0;
-        else
-            bit = 1;
+        m_htim.reset();
+        while (m_gpio.get() != LOW)
+        {
+            if (m_htim.elapsed_us() > 2000)
+            {
+                break;
+            }
+        }
 
-        res |= (bit << i);
+        uint32_t elapsed = m_htim.elapsed_us();
+
+        if (elapsed > 1000)
+        {
+            res |= (1 << i);
+        }
     }
 
     return res;
@@ -22,8 +31,7 @@ uint8_t IRRemote::read_byte()
 IRRemoteEntry IRRemote::receive()
 {
     // transmission start
-    m_gpio.set_mode(INPUT);
-    while (m_gpio.get() == HIGH);
+    if (!m_htim.delay_until(m_gpio, LOW, 100)) return {0, 0, false};
 
     m_htim.reset();
 
@@ -43,4 +51,9 @@ IRRemoteEntry IRRemote::receive()
     if ((data ^ data_bar) != 0xFF) return {0, 0, false};
 
     return {addr, data, true};
+}
+
+bool IRRemote::refresh()
+{
+    return m_htim.delay_until(m_gpio, LOW, 100);
 }

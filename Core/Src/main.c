@@ -425,7 +425,7 @@ static void MX_GPIO_Init(void)
     __HAL_RCC_GPIOB_CLK_ENABLE();
 
     /*Configure GPIO pin Output Level */
-    HAL_GPIO_WritePin(GPIOA, LD2_Pin | MOTOR2_2_Pin | MOTOR1_1_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOA, LD2_Pin | MOTOR2_2_Pin | MOTOR1_1_Pin | IRcontrol_Pin, GPIO_PIN_RESET);
 
     /*Configure GPIO pin Output Level */
     HAL_GPIO_WritePin(MOTOR1_2_GPIO_Port, MOTOR1_2_Pin, GPIO_PIN_RESET);
@@ -439,8 +439,8 @@ static void MX_GPIO_Init(void)
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-    /*Configure GPIO pins : LD2_Pin MOTOR2_2_Pin MOTOR1_1_Pin */
-    GPIO_InitStruct.Pin   = LD2_Pin | MOTOR2_2_Pin | MOTOR1_1_Pin;
+    /*Configure GPIO pins : LD2_Pin MOTOR2_2_Pin MOTOR1_1_Pin IRcontrol_Pin */
+    GPIO_InitStruct.Pin   = LD2_Pin | MOTOR2_2_Pin | MOTOR1_1_Pin | IRcontrol_Pin;
     GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull  = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -466,6 +466,11 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+int _write(int file, char* ptr, int len)
+{
+    HAL_UART_Transmit(&huart2, (const uint8_t*) ptr, len, HAL_MAX_DELAY);
+    return len;
+}
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_StartDefaultTask */

@@ -53,6 +53,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/main.cpp
 
     Core/Src/drivers/irremote.cpp
+    Core/Src/drivers/drive_sys.cpp
+
 
     Core/Src/cxx_abstractions/gpio.cpp
     Core/Src/cxx_abstractions/ptimer.cpp

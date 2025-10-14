@@ -50,29 +50,29 @@ uint32_t PTimer<T>::elapsed_us() const
 }
 
 template <typename T>
-void PTimer<T>::delay_us(T period_us)
+void PTimer<T>::delay_us(T timeout_us)
 {
     uint32_t m_freq           = this->freq_get();
-    uint32_t calculated_ticks = period_us * (m_freq / 1e6);
+    uint32_t calculated_ticks = timeout_us * (m_freq / 1e6);
 
-    __HAL_TIM_SET_COUNTER(&m_htim, 0);
+    this->reset();
     while (__HAL_TIM_GetCounter(&m_htim) < calculated_ticks);
 }
 
 template <typename T>
-bool PTimer<T>::delay_until(GPIO& gpio, GPIOState expected_state, T period_us)
+bool PTimer<T>::delay_until(GPIO& gpio, GPIOState expected_state, T timeout_us)
 {
-    uint32_t m_freq           = this->freq_get();
-    uint32_t calculated_ticks = period_us * (m_freq / 1e6);
-    uint32_t count            = 0;
+    this->reset();
 
-    __HAL_TIM_SET_COUNTER(&m_htim, 0);
-    while (__HAL_TIM_GetCounter(&m_htim) < calculated_ticks)
+    while (gpio.get() != expected_state)
     {
-        count++;
-        if (gpio.get() == expected_state) return true;
+        if (this->elapsed_us() >= timeout_us)
+        {
+            return false;
+        }
     }
-    return false;
+
+    return true;
 }
 
 template <typename T>
