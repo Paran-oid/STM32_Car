@@ -20,7 +20,9 @@ enum CarDirection
     CAR_BACKWARD_LEFT,
 
     CAR_ROTATE_RIGHT,
-    CAR_ROTATE_LEFT
+    CAR_ROTATE_LEFT,
+
+    CAR_STATIONARY,
 };
 
 class DriveSystem
@@ -28,8 +30,6 @@ class DriveSystem
    private:
     PTimer<uint16_t>& m_htim;  // speed controller
     GPIO &            m_gpio_in1, &m_gpio_in2, &m_gpio_in3, &m_gpio_in4;
-
-    void clear();
 
    public:
     DriveSystem() = delete;
@@ -39,6 +39,7 @@ class DriveSystem
     }
 
     void move(CarDirection direction);
+    void stop();
 
     ~DriveSystem() = default;
 };

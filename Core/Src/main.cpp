@@ -6,11 +6,19 @@ extern "C"
 }
 
 #include <stdio.h>
+#include <string.h>
 
 #include "drive_sys.hpp"
 #include "gpio.hpp"
 #include "irremote.hpp"
 #include "ptimer.hpp"
+
+// TODO: make main.cpp have less code
+
+extern osMemoryPoolId_t   mem_pool;
+extern osMemoryPoolAttr_t mem_pool_attributes;
+
+extern osMessageQueueId_t carInstructionsHandle;
 
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
@@ -35,11 +43,8 @@ void setup()
 {
     /**
      * TODO LIST
-     * ! Second part:
-     * * - make sure when I hold a button my remote it keeps moving
-     * * - Do a beta test for car (move just forward and backwards)
-     *
      * ! Third part:
+     * * - finish beta car testing part
      * * - Write logic for motors.c (all possible movements)
      * * - Test car with new added logic
      * * - Use RTOS techniques (threads, mutexes, queues) to communicate between IR and driver
@@ -53,11 +58,11 @@ void setup()
      * ?--> Once done we will start on other tasks (dive deeper in bluetooth)
      */
 
+    mem_pool = osMemoryPoolNew(10, sizeof(IRRemoteEntry), &mem_pool_attributes);
     tim2.start();
 
     tim3.pwm_start(TIM_CHANNEL_2);
     tim3.pwm_start(TIM_CHANNEL_3);
-
     IRcontrol_gpio.set_mode(INPUT);
 }
 
@@ -69,51 +74,80 @@ void loop()
 //
 // Tasks
 //
-void default_task()
+void main_task()
+{
+    while (1)
+    {
+        // background task
+        osDelay(1);
+    }
+
+    osThreadTerminate(NULL);
+}
+
+void IR_read_task()
 {
     while (1)
     {
         IRRemoteEntry entry = remote.receive();
         if (entry.state)
         {
-            printf("data: 0x%x\r\n", entry.data);
-            printf("addr: 0x%x\r\n", entry.addr);
+            IRRemoteEntry* item = (IRRemoteEntry*) osMemoryPoolAlloc(mem_pool, osWaitForever);
+            if (!item)
+            {
+                printf("couldn't send item");
+                Error_Handler();
+            }
+            memcpy(item, &entry, sizeof(entry));
+
+            osMessageQueuePut(carInstructionsHandle, item, 0, osWaitForever);
+        }
+        osDelay(1);
+    }
+}
+
+void car_move_task()
+{
+    while (1)
+    {
+        IRRemoteEntry* entry;
+        if (osMessageQueueGet(carInstructionsHandle, &entry, NULL, osWaitForever) == osOK)
+        {
+            // !fix this crap and then continue with the rest
+            printf("data: 0x%x\r\n", entry->data);
+            printf("addr: 0x%x\r\n", entry->addr);
             printf("\r\n");
 
-            if (entry.data == IR_REMOTE_2)
-            {
-                // drive_sys.move(CAR_FORWARD);
-                while ((entry.state))
-                {
-                    entry = remote.receive();
-                    if (entry.data != IR_REMOTE_REPEAT_CODE || entry.addr != IR_REMOTE_REPEAT_CODE)
-                    {
-                        break;
-                    }
-                    printf("held front\r\n");
-                    // drive_sys.move(CAR_FORWARD);
-                }
-            }
-            else if (entry.data == IR_REMOTE_8)
-            {
-                // drive_sys.move(CAR_BACKWARD);
-                while ((entry.state = remote.refresh()))
-                {
-                    entry = remote.receive();
-                    if (entry.data != IR_REMOTE_REPEAT_CODE || entry.addr != IR_REMOTE_REPEAT_CODE)
-                    {
-                        break;
-                    }
-                    printf("held backward\r\n");
-                    // drive_sys.move(CAR_BACKWARD);
-                }
-            }
+            osMemoryPoolFree(mem_pool, entry);
         }
+
+        // if (entry.state)
+        // {
+        //     if (entry.data == IR_REMOTE_2)
+        //     {
+        //         drive_sys.move(CAR_FORWARD);
+        //         move = CAR_FORWARD;
+        //     }
+        //     else if (entry.data == IR_REMOTE_8)
+        //     {
+        //         drive_sys.move(CAR_BACKWARD);
+        //         move = CAR_BACKWARD;
+        //     }
+        //     else if (entry.data == IR_REMOTE_MUTE)
+        //     {
+        //         drive_sys.stop();
+        //         move = CAR_STATIONARY;
+        //     }
+        //     else if (IR_REPEAT_CHECK(entry))
+        //     {
+        //         drive_sys.move(previous_car_direction);
+        //     }
+
+        //     previous_car_direction = move;
+        // }
 
         osDelay(1);
     }
-
-    osThreadTerminate(NULL);
 }
 
 extern "C"
@@ -128,8 +162,18 @@ extern "C"
         loop();
     }
 
-    void main_default_task(void)
+    void main_task_exec(void)
     {
-        default_task();
+        main_task();
+    }
+
+    void IR_read_task_exec(void)
+    {
+        IR_read_task();
+    }
+
+    void car_move_task_exec(void)
+    {
+        car_move_task();
     }
 }

@@ -42,22 +42,38 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-ADC_HandleTypeDef hadc1;
-
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 
 UART_HandleTypeDef huart2;
 
-/* Definitions for defaultTask */
-osThreadId_t         defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-    .name       = "defaultTask",
+/* Definitions for mainTask */
+osThreadId_t         mainTaskHandle;
+const osThreadAttr_t mainTask_attributes = {
+    .name       = "mainTask",
+    .stack_size = 128 * 4,
+    .priority   = (osPriority_t) osPriorityLow,
+};
+/* Definitions for IRreadTask */
+osThreadId_t         IRreadTaskHandle;
+const osThreadAttr_t IRreadTask_attributes = {
+    .name       = "IRreadTask",
     .stack_size = 128 * 4,
     .priority   = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for carMoveTask */
+osThreadId_t         carMoveTaskHandle;
+const osThreadAttr_t carMoveTask_attributes = {
+    .name       = "carMoveTask",
+    .stack_size = 128 * 4,
+    .priority   = (osPriority_t) osPriorityHigh,
+};
+/* Definitions for carInstructions */
+osMessageQueueId_t         carInstructionsHandle;
+const osMessageQueueAttr_t carInstructions_attributes = {.name = "carInstructions"};
 /* USER CODE BEGIN PV */
-
+osMemoryPoolId_t   mem_pool;
+osMemoryPoolAttr_t mem_pool_attributes = {.name = "mem_pool"};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -65,15 +81,18 @@ void        SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_TIM3_Init(void);
-static void MX_ADC1_Init(void);
 static void MX_TIM2_Init(void);
-void        StartDefaultTask(void* argument);
+void        MainTask(void* argument);
+void        IRReadTask(void* argument);
+void        CarMoveTask(void* argument);
 
 /* USER CODE BEGIN PFP */
 extern void main_setup(void);
 extern void main_loop(void);
 
-extern void main_default_task();
+extern void main_task_exec(void);
+extern void IR_read_task_exec(void);
+extern void car_move_task_exec(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -111,7 +130,6 @@ int main(void)
     MX_GPIO_Init();
     MX_USART2_UART_Init();
     MX_TIM3_Init();
-    MX_ADC1_Init();
     MX_TIM2_Init();
     /* USER CODE BEGIN 2 */
     main_setup();
@@ -132,13 +150,23 @@ int main(void)
     /* start timers, add new ones, ... */
     /* USER CODE END RTOS_TIMERS */
 
+    /* Create the queue(s) */
+    /* creation of carInstructions */
+    carInstructionsHandle = osMessageQueueNew(10, 10, &carInstructions_attributes);
+
     /* USER CODE BEGIN RTOS_QUEUES */
     /* add queues, ... */
     /* USER CODE END RTOS_QUEUES */
 
     /* Create the thread(s) */
-    /* creation of defaultTask */
-    defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+    /* creation of mainTask */
+    mainTaskHandle = osThreadNew(MainTask, NULL, &mainTask_attributes);
+
+    /* creation of IRreadTask */
+    IRreadTaskHandle = osThreadNew(IRReadTask, NULL, &IRreadTask_attributes);
+
+    /* creation of carMoveTask */
+    carMoveTaskHandle = osThreadNew(CarMoveTask, NULL, &carMoveTask_attributes);
 
     /* USER CODE BEGIN RTOS_THREADS */
     /* add threads, ... */
@@ -215,71 +243,6 @@ void SystemClock_Config(void)
 }
 
 /**
- * @brief ADC1 Initialization Function
- * @param None
- * @retval None
- */
-static void MX_ADC1_Init(void)
-{
-    /* USER CODE BEGIN ADC1_Init 0 */
-
-    /* USER CODE END ADC1_Init 0 */
-
-    ADC_MultiModeTypeDef   multimode = {0};
-    ADC_ChannelConfTypeDef sConfig   = {0};
-
-    /* USER CODE BEGIN ADC1_Init 1 */
-
-    /* USER CODE END ADC1_Init 1 */
-
-    /** Common config
-     */
-    hadc1.Instance                   = ADC1;
-    hadc1.Init.ClockPrescaler        = ADC_CLOCK_ASYNC_DIV1;
-    hadc1.Init.Resolution            = ADC_RESOLUTION_12B;
-    hadc1.Init.DataAlign             = ADC_DATAALIGN_RIGHT;
-    hadc1.Init.ScanConvMode          = ADC_SCAN_DISABLE;
-    hadc1.Init.EOCSelection          = ADC_EOC_SINGLE_CONV;
-    hadc1.Init.LowPowerAutoWait      = DISABLE;
-    hadc1.Init.ContinuousConvMode    = DISABLE;
-    hadc1.Init.NbrOfConversion       = 1;
-    hadc1.Init.DiscontinuousConvMode = DISABLE;
-    hadc1.Init.ExternalTrigConv      = ADC_SOFTWARE_START;
-    hadc1.Init.ExternalTrigConvEdge  = ADC_EXTERNALTRIGCONVEDGE_NONE;
-    hadc1.Init.DMAContinuousRequests = DISABLE;
-    hadc1.Init.Overrun               = ADC_OVR_DATA_PRESERVED;
-    hadc1.Init.OversamplingMode      = DISABLE;
-    if (HAL_ADC_Init(&hadc1) != HAL_OK)
-    {
-        Error_Handler();
-    }
-
-    /** Configure the ADC multi-mode
-     */
-    multimode.Mode = ADC_MODE_INDEPENDENT;
-    if (HAL_ADCEx_MultiModeConfigChannel(&hadc1, &multimode) != HAL_OK)
-    {
-        Error_Handler();
-    }
-
-    /** Configure Regular Channel
-     */
-    sConfig.Channel      = ADC_CHANNEL_1;
-    sConfig.Rank         = ADC_REGULAR_RANK_1;
-    sConfig.SamplingTime = ADC_SAMPLETIME_2CYCLES_5;
-    sConfig.SingleDiff   = ADC_SINGLE_ENDED;
-    sConfig.OffsetNumber = ADC_OFFSET_NONE;
-    sConfig.Offset       = 0;
-    if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-    {
-        Error_Handler();
-    }
-    /* USER CODE BEGIN ADC1_Init 2 */
-
-    /* USER CODE END ADC1_Init 2 */
-}
-
-/**
  * @brief TIM2 Initialization Function
  * @param None
  * @retval None
@@ -340,7 +303,7 @@ static void MX_TIM3_Init(void)
 
     /* USER CODE END TIM3_Init 1 */
     htim3.Instance               = TIM3;
-    htim3.Init.Prescaler         = 40 - 1;
+    htim3.Init.Prescaler         = 80 - 1;
     htim3.Init.CounterMode       = TIM_COUNTERMODE_UP;
     htim3.Init.Period            = 1000 - 1;
     htim3.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
@@ -473,18 +436,48 @@ int _write(int file, char* ptr, int len)
 }
 /* USER CODE END 4 */
 
-/* USER CODE BEGIN Header_StartDefaultTask */
+/* USER CODE BEGIN Header_MainTask */
 /**
- * @brief  Function implementing the defaultTask thread.
+ * @brief  Function implementing the mainTask thread.
  * @param  argument: Not used
  * @retval None
  */
-/* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void* argument)
+/* USER CODE END Header_MainTask */
+void MainTask(void* argument)
 {
     /* USER CODE BEGIN 5 */
-    main_default_task();
+    main_task_exec();
     /* USER CODE END 5 */
+}
+
+/* USER CODE BEGIN Header_IRReadTask */
+/**
+ * @brief Function implementing the IRreadTask thread.
+ * @param argument: Not used
+ * @retval None
+ */
+/* USER CODE END Header_IRReadTask */
+void IRReadTask(void* argument)
+{
+    /* USER CODE BEGIN IRReadTask */
+    /* Infinite loop */
+    IR_read_task_exec();
+    /* USER CODE END IRReadTask */
+}
+
+/* USER CODE BEGIN Header_CarMoveTask */
+/**
+ * @brief Function implementing the carMove thread.
+ * @param argument: Not used
+ * @retval None
+ */
+/* USER CODE END Header_CarMoveTask */
+void CarMoveTask(void* argument)
+{
+    /* USER CODE BEGIN CarMoveTask */
+    /* Infinite loop */
+    car_move_task_exec();
+    /* USER CODE END CarMoveTask */
 }
 
 /**

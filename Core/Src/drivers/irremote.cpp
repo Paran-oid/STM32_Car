@@ -11,7 +11,7 @@ uint8_t IRRemote::read_byte()
         m_htim.reset();
         while (m_gpio.get() != LOW)
         {
-            if (m_htim.elapsed_us() > 2000)
+            if (m_htim.elapsed_us() >= 1630)
             {
                 break;
             }
@@ -19,7 +19,7 @@ uint8_t IRRemote::read_byte()
 
         uint32_t elapsed = m_htim.elapsed_us();
 
-        if (elapsed > 1000)
+        if (elapsed > 600)
         {
             res |= (1 << i);
         }
@@ -31,26 +31,30 @@ uint8_t IRRemote::read_byte()
 IRRemoteEntry IRRemote::receive()
 {
     // transmission start
-    if (!m_htim.delay_until(m_gpio, LOW, 100)) return {0, 0, false};
+    if (!m_htim.delay_until(m_gpio, LOW, 1)) return {0, 0, false};
 
     m_htim.reset();
 
     if (!(m_htim.delay_until(m_gpio, HIGH, 9500))) return {0, 0, false};  // Leader mark (~9ms)
     if (!(m_htim.delay_until(m_gpio, LOW, 4600))) return {0, 0, false};   // Leader space (~4.5ms)
 
-    // interrpret data bits
-    uint8_t addr, addr_bar;
-    uint8_t data, data_bar;
+    IRRemoteEntry entry = {0, 0, 0, 0, true};
 
-    addr     = read_byte();
-    addr_bar = read_byte();
-    if ((addr ^ addr_bar) != 0xFF) return {0, 0, false};
+    entry.addr     = read_byte();
+    entry.addr_bar = read_byte();
 
-    data     = read_byte();
-    data_bar = read_byte();
-    if ((data ^ data_bar) != 0xFF) return {0, 0, false};
+    entry.data     = read_byte();
+    entry.data_bar = read_byte();
 
-    return {addr, data, true};
+    if (IR_REPEAT_CHECK(entry))
+    {
+        return entry;
+    }
+
+    if ((entry.addr ^ entry.addr_bar) != 0xFF || (entry.data ^ entry.data_bar) != 0xFF)
+        return {0, 0, 0, 0, false};
+
+    return entry;
 }
 
 bool IRRemote::refresh()

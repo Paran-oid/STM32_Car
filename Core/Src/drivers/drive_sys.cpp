@@ -5,7 +5,7 @@ extern "C"
 #include "cmsis_os.h"
 }
 
-void DriveSystem::clear()
+void DriveSystem::stop()
 {
     HAL_GPIO_WritePin(MOTOR1_1_GPIO_Port, MOTOR1_1_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(MOTOR1_2_GPIO_Port, MOTOR1_2_Pin, GPIO_PIN_RESET);
@@ -59,13 +59,15 @@ void DriveSystem::move(CarDirection direction)
             // right motor forward, left motor backward
             break;
 
+        case CAR_STATIONARY:
+            this->stop();
+            break;
+
         default:
             // stop motors or handle invalid direction
             break;
     }
 
-    osDelay(350);
+    osDelay(300);
     // TODO: create some sort of interrupt to stop car movement
-    this->clear();  // basically stop
 }
-

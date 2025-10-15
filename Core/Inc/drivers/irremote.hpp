@@ -10,8 +10,12 @@ extern "C"
 struct IRRemoteEntry
 {
     uint16_t addr;
+    uint16_t addr_bar;
+
     uint16_t data;
-    bool     state;
+    uint16_t data_bar;
+
+    bool state;
 };
 
 enum IRRemoteCode
@@ -41,8 +45,12 @@ enum IRRemoteCode
     IR_REMOTE_RPT  = 0x19,
     IR_REMOTE_U_SD = 0x0D,
 
-    IR_REMOTE_REPEAT_CODE = 0xFF  // not a button
+    IR_REMOTE_REPEAT_CODE = 0xFF  // gets sent when a button is held
 };
+
+#define IR_REPEAT_CHECK(entry)                                               \
+    ((entry.data) == (entry.data_bar) && (entry.data_bar) == (entry.addr) && \
+     (entry.addr) == (entry.addr_bar) && (entry.addr_bar) == 0xFF)
 
 class IRRemote
 {
