@@ -51,10 +51,11 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     Core/Src/main.cpp
+    Core/Src/tasks.cpp
+    Core/Src/hardware.cpp
 
     Core/Src/drivers/irremote.cpp
     Core/Src/drivers/drive_sys.cpp
-
 
     Core/Src/cxx_abstractions/gpio.cpp
     Core/Src/cxx_abstractions/ptimer.cpp

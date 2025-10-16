@@ -55,8 +55,9 @@ void setup()
     /**
      * TODO LIST
      * ! Third part:
-     * * - Improve code
+     * * - Improve code (less code in main.cpp and organize other files)
      * * - Write logic for motors.c (all possible movements)
+     * * - Think about a way to make the car work without usb connection
      * * - Test car with new added logic
      * * - Use RTOS techniques (threads, mutexes, queues) to communicate between IR and driver
      * * system
@@ -116,7 +117,7 @@ void IR_read_task()
             osMessageQueuePut(carInstructionsHandle, &item, 0, osWaitForever);
 
             cmd_sent = true;
-            osDelay(300);
+            osDelay(200);
         }
         else
         {
@@ -141,7 +142,7 @@ void car_move_task()
 
         drive_sys.exec((IRRemoteCode) r_entry->data);
 
-        osTimerStart(stopMotorTimerHandle, 400);
+        osTimerStart(stopMotorTimerHandle, 300);
         osMemoryPoolFree(mem_pool, r_entry);
 
         osDelay(1);
