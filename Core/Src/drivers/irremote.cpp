@@ -11,7 +11,7 @@ uint8_t IRRemote::read_byte()
         m_htim.reset();
         while (m_gpio.get() != LOW)
         {
-            if (m_htim.elapsed_us() >= 1630)
+            if (m_htim.elapsed_us() >= 2000)
             {
                 break;
             }
@@ -19,7 +19,7 @@ uint8_t IRRemote::read_byte()
 
         uint32_t elapsed = m_htim.elapsed_us();
 
-        if (elapsed > 600)
+        if (elapsed > 1000)
         {
             res |= (1 << i);
         }

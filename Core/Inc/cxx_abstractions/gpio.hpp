@@ -35,4 +35,14 @@ class GPIO
     void set(GPIOState state);
 
     GPIOState get();
+
+    uint16_t pin_get()
+    {
+        return m_pin;
+    }
+
+    GPIO_TypeDef* port_get()
+    {
+        return m_port;
+    }
 };

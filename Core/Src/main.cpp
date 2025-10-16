@@ -20,10 +20,15 @@ extern osMemoryPoolAttr_t mem_pool_attributes;
 
 extern osMessageQueueId_t carInstructionsHandle;
 
+extern osTimerId_t         stopMotorTimerHandle;
+extern const osTimerAttr_t stopMotorTimer_attributes;
+
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
 
 extern UART_HandleTypeDef huart2;
+
+extern void stopMotorCallback(void* args);
 
 PTimer<uint32_t> tim2 {htim2};  // used for precise delays
 PTimer<uint16_t> tim3 {htim3};  // pwm-related
@@ -34,7 +39,13 @@ IRRemote remote         = {IRcontrol_gpio, tim2};
 GPIO motor1[] = {{MOTOR1_1_GPIO_Port, MOTOR1_1_Pin}, {MOTOR1_2_GPIO_Port, MOTOR1_2_Pin}};
 GPIO motor2[] = {{MOTOR2_1_GPIO_Port, MOTOR2_1_Pin}, {MOTOR2_2_GPIO_Port, MOTOR2_2_Pin}};
 
-DriveSystem drive_sys = {tim3, motor1[0], motor1[1], motor2[0], motor2[1]};
+DriveSystem drive_sys = {tim3, motor1[0], motor1[1], motor2[0], motor2[1], stopMotorTimerHandle};
+bool        cmd_sent  = false;
+
+void stop_motor_callback(void* args)
+{
+    if (!cmd_sent) drive_sys.exec(IR_REMOTE_MUTE);
+}
 
 //
 // Main thread
@@ -44,7 +55,7 @@ void setup()
     /**
      * TODO LIST
      * ! Third part:
-     * * - finish beta car testing part
+     * * - Improve code
      * * - Write logic for motors.c (all possible movements)
      * * - Test car with new added logic
      * * - Use RTOS techniques (threads, mutexes, queues) to communicate between IR and driver
@@ -59,6 +70,7 @@ void setup()
      */
 
     mem_pool = osMemoryPoolNew(10, sizeof(IRRemoteEntry), &mem_pool_attributes);
+
     tim2.start();
 
     tim3.pwm_start(TIM_CHANNEL_2);
@@ -89,6 +101,8 @@ void IR_read_task()
 {
     while (1)
     {
+        osDelay(1);
+
         IRRemoteEntry entry = remote.receive();
         if (entry.state)
         {
@@ -99,52 +113,36 @@ void IR_read_task()
                 Error_Handler();
             }
             memcpy(item, &entry, sizeof(entry));
+            osMessageQueuePut(carInstructionsHandle, &item, 0, osWaitForever);
 
-            osMessageQueuePut(carInstructionsHandle, item, 0, osWaitForever);
+            cmd_sent = true;
+            osDelay(300);
         }
+        else
+        {
+            cmd_sent = false;
+        }
+
         osDelay(1);
     }
 }
 
 void car_move_task()
 {
+    IRRemoteEntry* r_entry;  // received entry
     while (1)
     {
-        IRRemoteEntry* entry;
-        if (osMessageQueueGet(carInstructionsHandle, &entry, NULL, osWaitForever) == osOK)
-        {
-            // !fix this crap and then continue with the rest
-            printf("data: 0x%x\r\n", entry->data);
-            printf("addr: 0x%x\r\n", entry->addr);
-            printf("\r\n");
+        osDelay(1);
 
-            osMemoryPoolFree(mem_pool, entry);
-        }
+        if (osMessageQueueGet(carInstructionsHandle, &r_entry, NULL, osWaitForever) != osOK)
+            continue;
 
-        // if (entry.state)
-        // {
-        //     if (entry.data == IR_REMOTE_2)
-        //     {
-        //         drive_sys.move(CAR_FORWARD);
-        //         move = CAR_FORWARD;
-        //     }
-        //     else if (entry.data == IR_REMOTE_8)
-        //     {
-        //         drive_sys.move(CAR_BACKWARD);
-        //         move = CAR_BACKWARD;
-        //     }
-        //     else if (entry.data == IR_REMOTE_MUTE)
-        //     {
-        //         drive_sys.stop();
-        //         move = CAR_STATIONARY;
-        //     }
-        //     else if (IR_REPEAT_CHECK(entry))
-        //     {
-        //         drive_sys.move(previous_car_direction);
-        //     }
+        if (!r_entry->state) continue;
 
-        //     previous_car_direction = move;
-        // }
+        drive_sys.exec((IRRemoteCode) r_entry->data);
+
+        osTimerStart(stopMotorTimerHandle, 400);
+        osMemoryPoolFree(mem_pool, r_entry);
 
         osDelay(1);
     }
@@ -175,5 +173,10 @@ extern "C"
     void car_move_task_exec(void)
     {
         car_move_task();
+    }
+
+    void stop_motor_callback_exec(void)
+    {
+        stop_motor_callback(NULL);
     }
 }

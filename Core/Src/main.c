@@ -71,6 +71,9 @@ const osThreadAttr_t carMoveTask_attributes = {
 /* Definitions for carInstructions */
 osMessageQueueId_t         carInstructionsHandle;
 const osMessageQueueAttr_t carInstructions_attributes = {.name = "carInstructions"};
+/* Definitions for stopMotorTimer */
+osTimerId_t         stopMotorTimerHandle;
+const osTimerAttr_t stopMotorTimer_attributes = {.name = "stopMotorTimer"};
 /* USER CODE BEGIN PV */
 osMemoryPoolId_t   mem_pool;
 osMemoryPoolAttr_t mem_pool_attributes = {.name = "mem_pool"};
@@ -85,6 +88,7 @@ static void MX_TIM2_Init(void);
 void        MainTask(void* argument);
 void        IRReadTask(void* argument);
 void        CarMoveTask(void* argument);
+void        stopMotorCallback(void* argument);
 
 /* USER CODE BEGIN PFP */
 extern void main_setup(void);
@@ -93,6 +97,8 @@ extern void main_loop(void);
 extern void main_task_exec(void);
 extern void IR_read_task_exec(void);
 extern void car_move_task_exec(void);
+extern void stop_motor_callback_exec(void);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -114,7 +120,6 @@ int main(void)
 
     /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
     HAL_Init();
-
     /* USER CODE BEGIN Init */
 
     /* USER CODE END Init */
@@ -145,6 +150,11 @@ int main(void)
     /* USER CODE BEGIN RTOS_SEMAPHORES */
     /* add semaphores, ... */
     /* USER CODE END RTOS_SEMAPHORES */
+
+    /* Create the timer(s) */
+    /* creation of stopMotorTimer */
+    stopMotorTimerHandle =
+        osTimerNew(stopMotorCallback, osTimerOnce, NULL, &stopMotorTimer_attributes);
 
     /* USER CODE BEGIN RTOS_TIMERS */
     /* start timers, add new ones, ... */
@@ -478,6 +488,14 @@ void CarMoveTask(void* argument)
     /* Infinite loop */
     car_move_task_exec();
     /* USER CODE END CarMoveTask */
+}
+
+/* stopMotorCallback function */
+void stopMotorCallback(void* argument)
+{
+    /* USER CODE BEGIN stopMotorCallback */
+    stop_motor_callback_exec();
+    /* USER CODE END stopMotorCallback */
 }
 
 /**

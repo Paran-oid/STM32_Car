@@ -17,6 +17,10 @@
 		"deque": "cpp",
 		"list": "cpp",
 		"string": "cpp",
-		"vector": "cpp"
+		"vector": "cpp",
+		"array": "cpp",
+		"string_view": "cpp",
+		"ranges": "cpp",
+		"span": "cpp"
 	}
 }

@@ -7,11 +7,10 @@ extern "C"
 
 void DriveSystem::stop()
 {
-    HAL_GPIO_WritePin(MOTOR1_1_GPIO_Port, MOTOR1_1_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(MOTOR1_2_GPIO_Port, MOTOR1_2_Pin, GPIO_PIN_RESET);
-
-    HAL_GPIO_WritePin(MOTOR2_1_GPIO_Port, MOTOR2_1_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(MOTOR2_2_GPIO_Port, MOTOR2_2_Pin, GPIO_PIN_RESET);
+    m_gpio_in1.set(LOW);
+    m_gpio_in2.set(LOW);
+    m_gpio_in3.set(LOW);
+    m_gpio_in4.set(LOW);
 }
 
 void DriveSystem::move(CarDirection direction)
@@ -19,20 +18,17 @@ void DriveSystem::move(CarDirection direction)
     switch (direction)
     {
         case CAR_FORWARD:
-            HAL_GPIO_WritePin(MOTOR1_1_GPIO_Port, MOTOR1_1_Pin, GPIO_PIN_SET);
-            HAL_GPIO_WritePin(MOTOR1_2_GPIO_Port, MOTOR1_2_Pin, GPIO_PIN_RESET);
-
-            HAL_GPIO_WritePin(MOTOR2_1_GPIO_Port, MOTOR2_1_Pin, GPIO_PIN_SET);
-            HAL_GPIO_WritePin(MOTOR2_2_GPIO_Port, MOTOR2_2_Pin, GPIO_PIN_RESET);
-
+            m_gpio_in1.set(HIGH);
+            m_gpio_in2.set(LOW);
+            m_gpio_in3.set(HIGH);
+            m_gpio_in4.set(LOW);
             break;
 
         case CAR_BACKWARD:
-            HAL_GPIO_WritePin(MOTOR1_1_GPIO_Port, MOTOR1_1_Pin, GPIO_PIN_RESET);
-            HAL_GPIO_WritePin(MOTOR1_2_GPIO_Port, MOTOR1_2_Pin, GPIO_PIN_SET);
-
-            HAL_GPIO_WritePin(MOTOR2_1_GPIO_Port, MOTOR2_1_Pin, GPIO_PIN_RESET);
-            HAL_GPIO_WritePin(MOTOR2_2_GPIO_Port, MOTOR2_2_Pin, GPIO_PIN_SET);
+            m_gpio_in1.set(LOW);
+            m_gpio_in2.set(HIGH);
+            m_gpio_in3.set(LOW);
+            m_gpio_in4.set(HIGH);
             break;
 
         case CAR_FORWARD_RIGHT:
@@ -60,14 +56,34 @@ void DriveSystem::move(CarDirection direction)
             break;
 
         case CAR_STATIONARY:
-            this->stop();
-            break;
-
         default:
+            this->stop();
             // stop motors or handle invalid direction
             break;
     }
+}
 
-    osDelay(300);
-    // TODO: create some sort of interrupt to stop car movement
+void DriveSystem::exec(IRRemoteCode code)
+{
+    static CarDirection direction = CAR_STATIONARY;
+
+    // map code to direction
+    switch (code)
+    {
+        case IR_REMOTE_2:
+            direction = CAR_FORWARD;
+            break;
+
+        case IR_REMOTE_8:
+            direction = CAR_BACKWARD;
+            break;
+        case IR_REMOTE_REPEAT_CODE:
+            break;
+        case IR_REMOTE_MUTE:
+        default:
+            direction = CAR_STATIONARY;
+            break;
+    }
+
+    this->move(direction);
 }
