@@ -1,7 +1,6 @@
 # Tasks
 
-- ~~ Create PWM generator through ADC~~.
-- Control movement of all DC motors (front/right/left/behind).
+
 - Setup bluetooth and test it with the setup movements added.
 - Write driver for an ultrasonic sensor.
 - Introduce infrared or LIDAR sensors.

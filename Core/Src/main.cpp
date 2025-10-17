@@ -3,41 +3,54 @@
 #include "rtos.hpp"
 #include "tasks.hpp"
 
-extern void stopMotorCallback(void* args);
+/**
+ * TODO LIST
+ *
+ * ! Fourth part (0.5):
+ * * - Read value of battery
+ * * - Output battery percentage (through either an LCD or another display)
+ * * - blink a led if battery too low
+ *
+ * ! Fourth part (1):
+ * * - Write driver for buzzer
+ * * - Introduce the feature of distance warning
+ * * (The more I approach my hand/an object, the more beeps it outputs)
+ *
+ * ! Fourth part (2):
+ * * - Write driver for Ultrasonic sensor
+ * * - Test written driver
+ * * - Add distance safety mechanism (if too close to an object output faster beeps)
+ * ! Fifth part:
+ * * - Add speed adjustment
+ * * - Add bluetooth
+ * * - Test logic and make sure 100% of the code works
+ *
+ *
+ * ! Last part:
+ * * - Make sure we save as much battery as possible (through sleep modes)
+ * * - Introduce documentation (on the whole project)
+ * * - Write with the use of AI a good README.md and add a video of the project
+ *
+ *
+ *
+ * ?--> Once done we will start on other tasks (dive deeper in bluetooth)
+ */
 
-//
-// Main thread
-//
 void setup()
 {
-    /**
-     * TODO LIST
-     * ! Third part:
-     * * - Improve code (less code in main.cpp and organize other files)
-     * * - Write logic for motors.c (all possible movements)
-     * * - Think about a way to make the car work without usb connection
-     * * - Test car with new added logic
-     * * - Use RTOS techniques (threads, mutexes, queues) to communicate between IR and driver
-     * * system
-     *
-     * ! Fourth part:
-     * * - Add bluetooth
-     * * - Test logic and make sure 100% of the code works
-     * * - Control the car using infra-red signals (for now)
-     *
-     * ?--> Once done we will start on other tasks (dive deeper in bluetooth)
-     */
     hal_init_all();
     rtos_init_all();
 }
 
-// should never be reached
 void loop()
 {
+    // should never be reached
 }
 
 extern "C"
 {
+    // Mapping main.c to main.cpp functions
+
     void main_setup(void)
     {
         setup();
