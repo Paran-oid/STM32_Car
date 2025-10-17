@@ -51,8 +51,11 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     Core/Src/main.cpp
-    Core/Src/tasks.cpp
-    Core/Src/hardware.cpp
+
+    Core/Src/App/rtos.cpp
+    Core/Src/App/hal_init.cpp
+    Core/Src/App/tasks.cpp
+
 
     Core/Src/drivers/irremote.cpp
     Core/Src/drivers/drive_sys.cpp
@@ -66,6 +69,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
     Core/Inc/drivers
     Core/Inc/cxx_abstractions
+    Core/Inc/App
 )
 
 # Add project symbols (macros)
