@@ -14,14 +14,11 @@ extern "C"
 #include "irremote.hpp"
 #include "rtos.hpp"
 
-//
-// Tasks
-//
 void main_task()
 {
+    // background task
     while (1)
     {
-        // background task
         osDelay(1);
     }
 
@@ -75,7 +72,6 @@ void car_move_task()
 
         osTimerStart(stopMotorTimerHandle, 300);
         osMemoryPoolFree(MemPoolHandle, r_entry);
-
         osDelay(1);
     }
     osThreadTerminate(NULL);

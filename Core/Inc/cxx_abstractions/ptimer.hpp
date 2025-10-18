@@ -48,5 +48,6 @@ class PTimer
 
     // pulse-width modulation generation
     bool pwm_start(uint8_t channel);
+    void pwm_set(uint16_t val, uint8_t channel);
     bool pwm_stop(uint8_t channel);
 };

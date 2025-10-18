@@ -7,24 +7,23 @@
  * TODO LIST
  *
  * ! Fourth part (0.5):
+ * * - Write driver for buzzer
+ * * - Write driver for Ultrasonic sensor
+ * * - Test written driver for both componments
+ * * - Introduce the feature of distance warning
+ * * (The more I approach my hand/an object, the more beeps it outputs)
+ * * - Add distance safety mechanism (if too close to an object output faster beeps)
+ *
+ * ! Fourth part (1):
  * * - Read value of battery
  * * - Output battery percentage (through either an LCD or another display)
  * * - blink a led if battery too low
  *
- * ! Fourth part (1):
- * * - Write driver for buzzer
- * * - Introduce the feature of distance warning
- * * (The more I approach my hand/an object, the more beeps it outputs)
- *
  * ! Fourth part (2):
- * * - Write driver for Ultrasonic sensor
- * * - Test written driver
- * * - Add distance safety mechanism (if too close to an object output faster beeps)
  * ! Fifth part:
  * * - Add speed adjustment
  * * - Add bluetooth
  * * - Test logic and make sure 100% of the code works
- *
  *
  * ! Last part:
  * * - Make sure we save as much battery as possible (through sleep modes)
