@@ -64,7 +64,7 @@ void DriveSystem::move(CarDirection direction)
     }
 }
 
-void DriveSystem::exec(IRRemoteCode code)
+void DriveSystem::execute(IRRemoteCode code)
 {
     static CarDirection direction = CAR_STATIONARY;
     // map IR code to direction

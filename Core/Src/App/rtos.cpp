@@ -8,7 +8,7 @@ bool cmd_sent = false;
 
 void stop_motor_callback(void* args)
 {
-    if (!cmd_sent) drive_sys.exec(IR_REMOTE_MUTE);
+    if (!cmd_sent) drive_sys.execute(IR_REMOTE_MUTE);
 }
 
 void rtos_init_all()

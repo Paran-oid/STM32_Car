@@ -1,5 +1,7 @@
 #include "irremote.hpp"
 
+#include "rtos.hpp"
+
 uint8_t IRRemote::read_byte()
 {
     uint8_t res, bit;
@@ -33,6 +35,8 @@ IRRemoteEntry IRRemote::receive()
     // transmission start
     if (!m_htim.delay_until(m_gpio, LOW, 1)) return {0, 0, false};
 
+    // osMutexAcquire(ptimerMutexHandle, osWaitForever);
+
     m_htim.reset();
 
     if (!(m_htim.delay_until(m_gpio, HIGH, 9500))) return {0, 0, false};  // Leader mark (~9ms)
@@ -54,6 +58,7 @@ IRRemoteEntry IRRemote::receive()
     if ((entry.addr ^ entry.addr_bar) != 0xFF || (entry.data ^ entry.data_bar) != 0xFF)
         return {0, 0, 0, 0, false};
 
+    // osMutexRelease(ptimerMutexHandle);
     return entry;
 }
 

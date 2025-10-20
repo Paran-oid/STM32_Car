@@ -65,14 +65,22 @@ void Error_Handler(void);
 #define USART_RX_GPIO_Port GPIOA
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
-#define MOTOR2_2_Pin GPIO_PIN_7
+#define BUZZER_Pin GPIO_PIN_4
+#define BUZZER_GPIO_Port GPIOC
+#define MOTOR1_1_Pin GPIO_PIN_11
+#define MOTOR1_1_GPIO_Port GPIOB
+#define MOTOR1_2_Pin GPIO_PIN_12
+#define MOTOR1_2_GPIO_Port GPIOB
+#define HCSR04_ECHO_Pin GPIO_PIN_6
+#define HCSR04_ECHO_GPIO_Port GPIOC
+#define HCSR04_TRIG_Pin GPIO_PIN_8
+#define HCSR04_TRIG_GPIO_Port GPIOC
+#define IRControl_Pin GPIO_PIN_10
+#define IRControl_GPIO_Port GPIOA
+#define MOTOR2_1_Pin GPIO_PIN_11
+#define MOTOR2_1_GPIO_Port GPIOA
+#define MOTOR2_2_Pin GPIO_PIN_12
 #define MOTOR2_2_GPIO_Port GPIOA
-#define MOTOR1_2_Pin GPIO_PIN_7
-#define MOTOR1_2_GPIO_Port GPIOC
-#define MOTOR1_1_Pin GPIO_PIN_9
-#define MOTOR1_1_GPIO_Port GPIOA
-#define IRcontrol_Pin GPIO_PIN_10
-#define IRcontrol_GPIO_Port GPIOA
 #define TMS_Pin GPIO_PIN_13
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
@@ -81,8 +89,6 @@ void Error_Handler(void);
 #define SWO_GPIO_Port GPIOB
 #define MOTOR1_SPEED_Pin GPIO_PIN_5
 #define MOTOR1_SPEED_GPIO_Port GPIOB
-#define MOTOR2_1_Pin GPIO_PIN_6
-#define MOTOR2_1_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

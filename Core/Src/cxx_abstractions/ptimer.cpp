@@ -7,6 +7,7 @@ template class PTimer<uint16_t>;
 
 const TIM_TypeDef* ABP2_TIMS[] = {TIM1, TIM8};
 
+
 template <typename T>
 uint32_t PTimer<T>::freq_get() const
 {

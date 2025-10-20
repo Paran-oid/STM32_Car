@@ -68,10 +68,23 @@ void car_move_task()
 
         if (!r_entry->state) continue;
 
-        drive_sys.exec((IRRemoteCode) r_entry->data);
+        drive_sys.execute((IRRemoteCode) r_entry->data);
 
         osTimerStart(stopMotorTimerHandle, 300);
         osMemoryPoolFree(MemPoolHandle, r_entry);
+        osDelay(1);
+    }
+    osThreadTerminate(NULL);
+}
+
+void HCSR04_read_task()
+{
+    while (1)
+    {
+        // buzzer.set(HIGH);
+        // osDelay(500);
+        // buzzer.set(LOW);
+        // osDelay(500);
         osDelay(1);
     }
     osThreadTerminate(NULL);

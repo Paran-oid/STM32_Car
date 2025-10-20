@@ -50,7 +50,7 @@ class DriveSystem
     {
     }
 
-    void exec(IRRemoteCode code);
+    void execute(IRRemoteCode code);
 
     ~DriveSystem() = default;
 };

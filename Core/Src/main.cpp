@@ -6,24 +6,21 @@
 /**
  * TODO LIST
  *
+ * ! IMMEDIATE FIXES REQUIRED:
+ * * - GET LITHIUM BATTERIES TO BE ABLE TO TRANSFER ENOUGH CURRENT TO THE MOTOR
+ * * - FIX HCSR04 CPP TASK NOT GETTING EXECUTED FOR SOME REASON
+ * * - STICK THE 4xAA BATTERY HOLDER ON THE TOP, TO BE USED FOR THE STM32
+ *
  * ! Fourth part (0.5):
- * * - Write driver for buzzer
- * * - Write driver for Ultrasonic sensor
- * * - Test written driver for both componments
+ * * - Write driver for Ultrasonic sensor and test it
  * * - Introduce the feature of distance warning
  * * (The more I approach my hand/an object, the more beeps it outputs)
- * * - Add distance safety mechanism (if too close to an object output faster beeps)
+ * * - Add distance safety mechanism (if too close to an object output faster beeps and stop car)
  *
  * ! Fourth part (1):
  * * - Read value of battery
- * * - Output battery percentage (through either an LCD or another display)
- * * - blink a led if battery too low
- *
- * ! Fourth part (2):
- * ! Fifth part:
- * * - Add speed adjustment
+ * * - blink a led if battery too low (make too leds for both power sources)
  * * - Add bluetooth
- * * - Test logic and make sure 100% of the code works
  *
  * ! Last part:
  * * - Make sure we save as much battery as possible (through sleep modes)
@@ -32,7 +29,7 @@
  *
  *
  *
- * ?--> Once done we will start on other tasks (dive deeper in bluetooth)
+ * ?--> Once done we will start to work on other tasks (dive deeper in bluetooth)
  */
 
 void setup()
@@ -48,7 +45,7 @@ void loop()
 
 extern "C"
 {
-    // Mapping main.c to main.cpp functions
+    // Mapping main.c to main.cpp functions/tasks
 
     void main_setup(void)
     {
@@ -78,5 +75,10 @@ extern "C"
     void stop_motor_callback_exec(void)
     {
         stop_motor_callback(NULL);
+    }
+
+    void HCSR04_read_task_exec(void)
+    {
+        HCSR04_read_task();
     }
 }
