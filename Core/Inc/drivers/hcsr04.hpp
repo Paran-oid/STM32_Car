@@ -21,7 +21,7 @@ class HCSR04
     {
     }
 
-    uint16_t retrieve();
+    int16_t retrieve();
 
     ~HCSR04() = default;
 };

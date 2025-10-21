@@ -6,11 +6,6 @@
 /**
  * TODO LIST
  *
- * ! IMMEDIATE FIXES REQUIRED:
- * * - GET LITHIUM BATTERIES TO BE ABLE TO TRANSFER ENOUGH CURRENT TO THE MOTOR
- * * - FIX HCSR04 CPP TASK NOT GETTING EXECUTED FOR SOME REASON
- * * - STICK THE 4xAA BATTERY HOLDER ON THE TOP, TO BE USED FOR THE STM32
- *
  * ! Fourth part (0.5):
  * * - Write driver for Ultrasonic sensor and test it
  * * - Introduce the feature of distance warning
@@ -18,6 +13,8 @@
  * * - Add distance safety mechanism (if too close to an object output faster beeps and stop car)
  *
  * ! Fourth part (1):
+ * * - Reintroduce speed timer (pwm)
+ * * - Introduce error codes
  * * - Read value of battery
  * * - blink a led if battery too low (make too leds for both power sources)
  * * - Add bluetooth
@@ -72,13 +69,13 @@ extern "C"
         car_move_task();
     }
 
-    void stop_motor_callback_exec(void)
-    {
-        stop_motor_callback(NULL);
-    }
-
     void HCSR04_read_task_exec(void)
     {
         HCSR04_read_task();
+    }
+
+    void stop_motor_callback_exec(void)
+    {
+        stop_motor_callback(NULL);
     }
 }
