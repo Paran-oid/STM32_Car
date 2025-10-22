@@ -49,6 +49,7 @@ class GPIO
     void mode_set(GPIOMode mode);
 
     void      state_set(GPIOState state);
+    void      state_toggle();
     GPIOState state_get() const;
 
     uint16_t pin_get() const

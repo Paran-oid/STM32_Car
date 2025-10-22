@@ -1,5 +1,26 @@
 #pragma once
 
+extern "C"
+{
+#include "main.h"
+}
+
+/***********************************************************
+ * Public GPIO enums for specifying instruction type
+ ***********************************************************/
+enum SensorRequestCode : uint8_t
+{
+    IR_SIGNAL = 0,
+    BUZZER_ON
+};
+
+template <typename T>
+struct SensorRequest
+{
+    SensorRequestCode code;
+    T                 content;
+} __attribute__((packed));
+
 /***************************************************************
  * Function declarations
  ***************************************************************/

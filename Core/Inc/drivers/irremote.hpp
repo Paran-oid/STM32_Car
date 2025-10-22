@@ -27,7 +27,7 @@ struct IRRemoteEntry
     uint16_t data;
     uint16_t data_bar;
 
-    bool state;
+    bool is_valid;
 };
 
 /***********************************************************

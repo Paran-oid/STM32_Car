@@ -22,7 +22,7 @@
  *
  * ! Last part:
  * * - Make sure we save as much battery as possible (through sleep modes)
- * * - Introduce documentation (on the whole project)
+ * * - Enhance documentation and verify that every module is explained throughthly
  * * - Write with the use of AI a good README.md and add a video of the project
  *
  *

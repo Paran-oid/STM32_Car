@@ -8,9 +8,9 @@ int16_t HCSR04::retrieve()
 {
     osMutexAcquire(ptimerMutexHandle, osWaitForever);
 
-    this->m_trig.set_state(HIGH);
+    this->m_trig.state_set(HIGH);
     m_htim.delay_us(10);
-    this->m_trig.set_state(LOW);
+    this->m_trig.state_set(LOW);
 
     if (!m_htim.delay_until(m_echo, HIGH, 5000))
     {
@@ -27,7 +27,7 @@ int16_t HCSR04::retrieve()
 
     uint32_t elapsed_us = m_htim.elapsed_us();
 
-    float distance_cm = (elapsed_us * 0.017f);
+    float distance_cm = (elapsed_us * 0.017f);  // 340 / (2 * 1000)
 
     osMutexRelease(ptimerMutexHandle);
 

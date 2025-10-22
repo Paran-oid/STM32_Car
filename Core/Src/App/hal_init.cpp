@@ -15,7 +15,7 @@ IRRemote remote         = {IRControl_gpio, tim2};
 GPIO motor1[] = {{MOTOR1_1_GPIO_Port, MOTOR1_1_Pin}, {MOTOR1_2_GPIO_Port, MOTOR1_2_Pin}};
 GPIO motor2[] = {{MOTOR2_1_GPIO_Port, MOTOR2_1_Pin}, {MOTOR2_2_GPIO_Port, MOTOR2_2_Pin}};
 
-DriveSystem drive_sys = {motor1[0], motor1[1], motor2[0], motor2[1], stopMotorTimerHandle};
+DriveSystem drive_sys = {motor1[0], motor1[1], motor2[0], motor2[1], StopMotorTimerHandle};
 
 GPIO   hcsr04_trig = {HCSR04_TRIG_GPIO_Port, HCSR04_TRIG_Pin};
 GPIO   hcsr04_echo = {HCSR04_ECHO_GPIO_Port, HCSR04_ECHO_Pin};

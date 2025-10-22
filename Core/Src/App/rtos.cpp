@@ -4,11 +4,20 @@
 #include "hal_init.hpp"
 #include "irremote.hpp"
 
-bool cmd_sent = false;
+volatile bool is_cmd_sent = false;
+volatile bool is_warning  = false;
 
 void stop_motor_callback(void* argument)
 {
-    if (!cmd_sent) drive_sys.execute(IR_REMOTE_MUTE);
+    if (!is_cmd_sent) drive_sys.execute(IR_REMOTE_MUTE);
+}
+
+void stop_warning_timer(void* argument)
+{
+    if (is_warning)
+    {
+        buzzer.state_toggle();
+    }
 }
 
 void rtos_init_all()

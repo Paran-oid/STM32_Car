@@ -33,23 +33,24 @@ void IR_read_task(void* argument)
         osDelay(1);
 
         IRRemoteEntry entry = remote.receive();
-        if (entry.state)
+        if (entry.is_valid)
         {
-            IRRemoteEntry* item = (IRRemoteEntry*) osMemoryPoolAlloc(MemPoolHandle, osWaitForever);
+            SensorRequest<IRRemoteEntry> req  = {IR_SIGNAL, entry};
+            void*                        item = osMemoryPoolAlloc(MemPoolHandle, osWaitForever);
             if (!item)
             {
-                printf("couldn't send item");
+                printf("couldn't allocate item in memory pool");
                 Error_Handler();
             }
-            memcpy(item, &entry, sizeof(entry));
+            memcpy(item, &req, sizeof(req));
             osMessageQueuePut(sensorQueueHandle, &item, 0, osWaitForever);
 
-            cmd_sent = true;
+            is_cmd_sent = true;
             osDelay(SIGNAL_DELAY_US);
         }
         else
         {
-            cmd_sent = false;
+            is_cmd_sent = false;
         }
 
         osDelay(1);
@@ -59,19 +60,34 @@ void IR_read_task(void* argument)
 
 void car_move_task(void* argument)
 {
-    IRRemoteEntry* r_entry;  // received entry
+    void* req;  // received request pointer
     while (1)
     {
         osDelay(1);
 
-        if (osMessageQueueGet(sensorQueueHandle, &r_entry, NULL, osWaitForever) != osOK) continue;
+        if (osMessageQueueGet(sensorQueueHandle, &req, NULL, osWaitForever) != osOK) continue;
+        uint8_t code = *(reinterpret_cast<uint8_t*>(req));
 
-        if (!r_entry->state) continue;
+        switch (code)
+        {
+            case IR_SIGNAL:
+            {
+                SensorRequest<IRRemoteEntry>* parsed =
+                    reinterpret_cast<SensorRequest<IRRemoteEntry>*>(req);
 
-        drive_sys.execute((IRRemoteCode) r_entry->data);
+                if (!parsed->content.is_valid) continue;
 
-        osMemoryPoolFree(MemPoolHandle, r_entry);
-        osTimerStart(stopMotorTimerHandle, SIGNAL_DELAY_US + 100);
+                drive_sys.execute((IRRemoteCode) parsed->content.data);
+
+                osMemoryPoolFree(MemPoolHandle, parsed);
+                osTimerStart(StopMotorTimerHandle, SIGNAL_DELAY_US + 100);
+            }
+            break;
+            case BUZZER_ON:
+            {
+                break;
+            }
+        }
 
         osDelay(1);
     }
@@ -80,11 +96,39 @@ void car_move_task(void* argument)
 
 void HCSR04_read_task(void* argument)
 {
-    int16_t distance = 0;
+    uint32_t previous_warning_duration = 0;
+    int16_t  distance                  = 0;
+
     while (1)
     {
         distance = hcsr04.retrieve();
-        osDelay(50);
+        if (distance == -1) continue;
+
+        // TODO: add this to control task
+        if (distance <= 5)
+        {
+            uint32_t warning_duration = distance * 20 + 100;  // between 200 and 400 ms duration
+
+            if (!is_warning)
+            {
+                is_warning = true;
+                osTimerStart(StopWarningTimerHandle, warning_duration);
+            }
+            else if (warning_duration != previous_warning_duration)
+            {
+                osTimerStop(StopWarningTimerHandle);
+                osTimerStart(StopWarningTimerHandle, warning_duration);
+            }
+            previous_warning_duration = warning_duration;
+        }
+        else if (is_warning)
+        {
+            osTimerStop(StopWarningTimerHandle);
+            buzzer.state_set(LOW);
+            is_warning = false;
+        }
+
+        osDelay(100);
     }
     osThreadTerminate(NULL);
 }

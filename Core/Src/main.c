@@ -85,9 +85,12 @@ const osThreadAttr_t ControllerTask_attributes = {
 /* Definitions for sensorQueue */
 osMessageQueueId_t         sensorQueueHandle;
 const osMessageQueueAttr_t sensorQueue_attributes = {.name = "sensorQueue"};
-/* Definitions for stopMotorTimer */
-osTimerId_t         stopMotorTimerHandle;
-const osTimerAttr_t stopMotorTimer_attributes = {.name = "stopMotorTimer"};
+/* Definitions for StopMotorTimer */
+osTimerId_t         StopMotorTimerHandle;
+const osTimerAttr_t StopMotorTimer_attributes = {.name = "StopMotorTimer"};
+/* Definitions for StopWarningTimer */
+osTimerId_t         StopWarningTimerHandle;
+const osTimerAttr_t StopWarningTimer_attributes = {.name = "StopWarningTimer"};
 /* Definitions for ptimerMutex */
 osMutexId_t         ptimerMutexHandle;
 const osMutexAttr_t ptimerMutex_attributes = {.name = "ptimerMutex"};
@@ -107,6 +110,7 @@ extern void car_move_task(void* argument);
 extern void HCSR04_read_task(void* argument);
 extern void controller_task(void* argument);
 extern void stop_motor_callback(void* argument);
+extern void stop_warning_timer(void* argument);
 
 /* USER CODE BEGIN PFP */
 extern void main_setup(void);
@@ -167,9 +171,13 @@ int main(void)
     /* USER CODE END RTOS_SEMAPHORES */
 
     /* Create the timer(s) */
-    /* creation of stopMotorTimer */
-    stopMotorTimerHandle =
-        osTimerNew(stop_motor_callback, osTimerOnce, NULL, &stopMotorTimer_attributes);
+    /* creation of StopMotorTimer */
+    StopMotorTimerHandle =
+        osTimerNew(stop_motor_callback, osTimerOnce, NULL, &StopMotorTimer_attributes);
+
+    /* creation of StopWarningTimer */
+    StopWarningTimerHandle =
+        osTimerNew(stop_warning_timer, osTimerPeriodic, NULL, &StopWarningTimer_attributes);
 
     /* USER CODE BEGIN RTOS_TIMERS */
     /* start timers, add new ones, ... */
@@ -177,7 +185,7 @@ int main(void)
 
     /* Create the queue(s) */
     /* creation of sensorQueue */
-    sensorQueueHandle = osMessageQueueNew(8, 10, &sensorQueue_attributes);
+    sensorQueueHandle = osMessageQueueNew(8, 15, &sensorQueue_attributes);
 
     /* USER CODE BEGIN RTOS_QUEUES */
     /* add queues, ... */
