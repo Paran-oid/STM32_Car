@@ -6,7 +6,7 @@
 
 bool cmd_sent = false;
 
-void stop_motor_callback(void* args)
+void stop_motor_callback(void* argument)
 {
     if (!cmd_sent) drive_sys.execute(IR_REMOTE_MUTE);
 }

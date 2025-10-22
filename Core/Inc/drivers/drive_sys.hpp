@@ -10,6 +10,9 @@ extern "C"
 #include "irremote.hpp"
 #include "ptimer.hpp"
 
+/***********************************************************
+ * Public GPIO enums for specifying directions
+ ***********************************************************/
 enum CarDirection
 {
     CAR_FORWARD,
@@ -27,19 +30,31 @@ enum CarDirection
     CAR_STATIONARY,
 };
 
+/***************************************************************
+ * DriveSystem class for controlling the movement of the car (through the motor)
+ ***************************************************************/
 class DriveSystem
 {
    private:
+    /***********************************************************
+     * Private Members
+     ***********************************************************/
     // motor1(left): in1 and in2
     // motor2(right): in3 and in4
     GPIO &m_gpio_in1, &m_gpio_in2, &m_gpio_in3, &m_gpio_in4;
 
     osTimerId_t& m_ostim_motor;
 
+    /***********************************************************
+     * Private Methods
+     ***********************************************************/
     void pins_set(bool in1, bool in2, bool in3, bool in4);
     void move(CarDirection direction);
 
    public:
+    /***********************************************************
+     * Constructors / Destructor
+     ***********************************************************/
     DriveSystem() = delete;
     DriveSystem(GPIO& in1, GPIO& in2, GPIO& in3, GPIO& in4, osTimerId_t& ostim_motor)
         : m_gpio_in1 {in1},
@@ -49,8 +64,10 @@ class DriveSystem
           m_ostim_motor {ostim_motor}
     {
     }
-
-    void execute(IRRemoteCode code);
-
     ~DriveSystem() = default;
+
+    /***********************************************************
+     * Public Methods
+     ***********************************************************/
+    void execute(IRRemoteCode code);
 };

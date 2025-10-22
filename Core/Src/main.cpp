@@ -7,10 +7,11 @@
  * TODO LIST
  *
  * ! Fourth part (0.5):
- * * - Write driver for Ultrasonic sensor and test it
  * * - Introduce the feature of distance warning
  * * (The more I approach my hand/an object, the more beeps it outputs)
  * * - Add distance safety mechanism (if too close to an object output faster beeps and stop car)
+ * * - Make sure mutex ensures htim isn't modified or smth during critical section by differnet
+ * * thread for htim3
  *
  * ! Fourth part (1):
  * * - Reintroduce speed timer (pwm)
@@ -52,30 +53,5 @@ extern "C"
     void main_loop(void)
     {
         loop();
-    }
-
-    void main_task_exec(void)
-    {
-        main_task();
-    }
-
-    void IR_read_task_exec(void)
-    {
-        IR_read_task();
-    }
-
-    void car_move_task_exec(void)
-    {
-        car_move_task();
-    }
-
-    void HCSR04_read_task_exec(void)
-    {
-        HCSR04_read_task();
-    }
-
-    void stop_motor_callback_exec(void)
-    {
-        stop_motor_callback(NULL);
     }
 }

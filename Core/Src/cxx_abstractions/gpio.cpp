@@ -1,6 +1,6 @@
 #include "gpio.hpp"
 
-void GPIO::set_mode(GPIOMode mode)
+void GPIO::mode_set(GPIOMode mode)
 {
     GPIO_InitTypeDef gpio_initializer = {0};
 
@@ -10,12 +10,12 @@ void GPIO::set_mode(GPIOMode mode)
     HAL_GPIO_Init(m_port, &gpio_initializer);
 }
 
-void GPIO::set(GPIOState state)
+void GPIO::state_set(GPIOState state)
 {
     HAL_GPIO_WritePin(m_port, m_pin, (GPIO_PinState) state);
 }
 
-GPIOState GPIO::get()
+GPIOState GPIO::state_get() const
 {
     return HAL_GPIO_ReadPin(m_port, m_pin) == GPIO_PIN_RESET ? LOW : HIGH;
 }

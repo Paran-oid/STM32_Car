@@ -7,7 +7,6 @@ template class PTimer<uint16_t>;
 
 const TIM_TypeDef* ABP2_TIMS[] = {TIM1, TIM8};
 
-
 template <typename T>
 uint32_t PTimer<T>::freq_get() const
 {
@@ -65,7 +64,7 @@ bool PTimer<T>::delay_until(GPIO& gpio, GPIOState expected_state, T timeout_us)
 {
     this->reset();
 
-    while (gpio.get() != expected_state)
+    while (gpio.state_get() != expected_state)
     {
         if (this->elapsed_us() >= timeout_us)
         {

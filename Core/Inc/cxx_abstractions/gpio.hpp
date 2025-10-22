@@ -5,6 +5,9 @@ extern "C"
 #include "main.h"
 }
 
+/***************************************************************
+ * Public GPIO enums for state and mode management
+ ***************************************************************/
 enum GPIOMode
 {
     OUTPUT = GPIO_MODE_OUTPUT_PP,
@@ -17,13 +20,22 @@ enum GPIOState
     LOW  = GPIO_PIN_RESET
 };
 
+/***************************************************************
+ * GPIO class for handling general-purpose register interactions
+ ***************************************************************/
 class GPIO
 {
    private:
+    /***********************************************************
+     * Private Members
+     ***********************************************************/
     GPIO_TypeDef* m_port;
     uint16_t      m_pin;
 
    public:
+    /***********************************************************
+     * Constructors / Destructor
+     ***********************************************************/
     GPIO() = delete;
     GPIO(GPIO_TypeDef* port, uint16_t pin) : m_port {port}, m_pin {pin}
     {
@@ -31,12 +43,15 @@ class GPIO
 
     ~GPIO() = default;
 
-    void set_mode(GPIOMode mode);
-    void set(GPIOState state);
+    /***********************************************************
+     * Getters and Setters
+     ***********************************************************/
+    void mode_set(GPIOMode mode);
 
-    GPIOState get();
+    void      state_set(GPIOState state);
+    GPIOState state_get() const;
 
-    uint16_t pin_get()
+    uint16_t pin_get() const
     {
         return m_pin;
     }

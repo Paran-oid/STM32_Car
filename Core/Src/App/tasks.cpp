@@ -15,7 +15,7 @@ extern "C"
 #include "irremote.hpp"
 #include "rtos.hpp"
 
-void main_task()
+void MainTask(void* argument)
 {
     // background task
     while (1)
@@ -26,66 +26,73 @@ void main_task()
     osThreadTerminate(NULL);
 }
 
-void IR_read_task()
+void IR_read_task(void* argument)
 {
     while (1)
     {
-        // osDelay(1);
+        osDelay(1);
 
-        // IRRemoteEntry entry = remote.receive();
-        // if (entry.state)
-        // {
-        //     IRRemoteEntry* item = (IRRemoteEntry*) osMemoryPoolAlloc(MemPoolHandle,
-        //     osWaitForever); if (!item)
-        //     {
-        //         printf("couldn't send item");
-        //         Error_Handler();
-        //     }
-        //     memcpy(item, &entry, sizeof(entry));
-        //     osMessageQueuePut(carInstructionsHandle, &item, 0, osWaitForever);
+        IRRemoteEntry entry = remote.receive();
+        if (entry.state)
+        {
+            IRRemoteEntry* item = (IRRemoteEntry*) osMemoryPoolAlloc(MemPoolHandle, osWaitForever);
+            if (!item)
+            {
+                printf("couldn't send item");
+                Error_Handler();
+            }
+            memcpy(item, &entry, sizeof(entry));
+            osMessageQueuePut(sensorQueueHandle, &item, 0, osWaitForever);
 
-        //     cmd_sent = true;
-        //     osDelay(250);
-        // }
-        // else
-        // {
-        //     cmd_sent = false;
-        // }
+            cmd_sent = true;
+            osDelay(SIGNAL_DELAY_US);
+        }
+        else
+        {
+            cmd_sent = false;
+        }
 
         osDelay(1);
     }
     osThreadTerminate(NULL);
 }
 
-void car_move_task()
+void car_move_task(void* argument)
 {
     IRRemoteEntry* r_entry;  // received entry
     while (1)
     {
-        // osDelay(1);
+        osDelay(1);
 
-        // if (osMessageQueueGet(carInstructionsHandle, &r_entry, NULL, osWaitForever) != osOK)
-        //     continue;
+        if (osMessageQueueGet(sensorQueueHandle, &r_entry, NULL, osWaitForever) != osOK) continue;
 
-        // if (!r_entry->state) continue;
+        if (!r_entry->state) continue;
 
-        // drive_sys.execute((IRRemoteCode) r_entry->data);
+        drive_sys.execute((IRRemoteCode) r_entry->data);
 
-        // osMemoryPoolFree(MemPoolHandle, r_entry);
-        // osTimerStart(stopMotorTimerHandle, 300);
+        osMemoryPoolFree(MemPoolHandle, r_entry);
+        osTimerStart(stopMotorTimerHandle, SIGNAL_DELAY_US + 100);
+
         osDelay(1);
     }
     osThreadTerminate(NULL);
 }
 
-void HCSR04_read_task()
+void HCSR04_read_task(void* argument)
 {
-    uint16_t distance = 0;
+    int16_t distance = 0;
     while (1)
     {
         distance = hcsr04.retrieve();
-        printf("distance is %lu\r\n", distance);
-        osDelay(500);
+        osDelay(50);
     }
     osThreadTerminate(NULL);
+}
+
+void controller_task(void* argument)
+{
+    while (1)
+    {
+        osDelay(1);
+    }
 }

@@ -8,10 +8,10 @@ uint8_t IRRemote::read_byte()
     res = bit = 0;
     for (uint8_t i = 0; i < 8; i++)
     {
-        while (m_gpio.get() != HIGH);
+        while (m_gpio.state_get() != HIGH);
 
         m_htim.reset();
-        while (m_gpio.get() != LOW)
+        while (m_gpio.state_get() != LOW)
         {
             if (m_htim.elapsed_us() >= 2000)
             {

@@ -47,10 +47,10 @@ TIM_HandleTypeDef htim2;
 
 UART_HandleTypeDef huart2;
 
-/* Definitions for mainTask */
-osThreadId_t         mainTaskHandle;
-const osThreadAttr_t mainTask_attributes = {
-    .name       = "mainTask",
+/* Definitions for MainTask */
+osThreadId_t         MainTaskHandle;
+const osThreadAttr_t MainTask_attributes = {
+    .name       = "MainTask",
     .stack_size = 128 * 4,
     .priority   = (osPriority_t) osPriorityLow,
 };
@@ -61,23 +61,30 @@ const osThreadAttr_t IRreadTask_attributes = {
     .stack_size = 128 * 4,
     .priority   = (osPriority_t) osPriorityNormal,
 };
-/* Definitions for carMoveTask */
-osThreadId_t         carMoveTaskHandle;
-const osThreadAttr_t carMoveTask_attributes = {
-    .name       = "carMoveTask",
-    .stack_size = 128 * 4,
-    .priority   = (osPriority_t) osPriorityHigh,
-};
-/* Definitions for HCSR04readTask */
-osThreadId_t         HCSR04readTaskHandle;
-const osThreadAttr_t HCSR04readTask_attributes = {
-    .name       = "HCSR04readTask",
+/* Definitions for CarMoveTask */
+osThreadId_t         CarMoveTaskHandle;
+const osThreadAttr_t CarMoveTask_attributes = {
+    .name       = "CarMoveTask",
     .stack_size = 128 * 4,
     .priority   = (osPriority_t) osPriorityNormal,
 };
-/* Definitions for carInstructions */
-osMessageQueueId_t         carInstructionsHandle;
-const osMessageQueueAttr_t carInstructions_attributes = {.name = "carInstructions"};
+/* Definitions for HCSR04ReadTask */
+osThreadId_t         HCSR04ReadTaskHandle;
+const osThreadAttr_t HCSR04ReadTask_attributes = {
+    .name       = "HCSR04ReadTask",
+    .stack_size = 128 * 4,
+    .priority   = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for ControllerTask */
+osThreadId_t         ControllerTaskHandle;
+const osThreadAttr_t ControllerTask_attributes = {
+    .name       = "ControllerTask",
+    .stack_size = 128 * 4,
+    .priority   = (osPriority_t) osPriorityHigh,
+};
+/* Definitions for sensorQueue */
+osMessageQueueId_t         sensorQueueHandle;
+const osMessageQueueAttr_t sensorQueue_attributes = {.name = "sensorQueue"};
 /* Definitions for stopMotorTimer */
 osTimerId_t         stopMotorTimerHandle;
 const osTimerAttr_t stopMotorTimer_attributes = {.name = "stopMotorTimer"};
@@ -94,22 +101,16 @@ void        SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_TIM2_Init(void);
-void        MainTask(void* argument);
-void        IRReadTask(void* argument);
-void        CarMoveTask(void* argument);
-void        HCSR04ReadTask(void* argument);
-void        stopMotorCallback(void* argument);
+void        main_task(void* argument);
+extern void IR_read_task(void* argument);
+extern void car_move_task(void* argument);
+extern void HCSR04_read_task(void* argument);
+extern void controller_task(void* argument);
+extern void stop_motor_callback(void* argument);
 
 /* USER CODE BEGIN PFP */
 extern void main_setup(void);
 extern void main_loop(void);
-
-extern void main_task_exec(void);
-extern void IR_read_task_exec(void);
-extern void car_move_task_exec(void);
-extern void stop_motor_callback_exec(void);
-extern void HCSR04_read_task_exec(void);
-
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -168,32 +169,35 @@ int main(void)
     /* Create the timer(s) */
     /* creation of stopMotorTimer */
     stopMotorTimerHandle =
-        osTimerNew(stopMotorCallback, osTimerOnce, NULL, &stopMotorTimer_attributes);
+        osTimerNew(stop_motor_callback, osTimerOnce, NULL, &stopMotorTimer_attributes);
 
     /* USER CODE BEGIN RTOS_TIMERS */
     /* start timers, add new ones, ... */
     /* USER CODE END RTOS_TIMERS */
 
     /* Create the queue(s) */
-    /* creation of carInstructions */
-    carInstructionsHandle = osMessageQueueNew(10, 10, &carInstructions_attributes);
+    /* creation of sensorQueue */
+    sensorQueueHandle = osMessageQueueNew(8, 10, &sensorQueue_attributes);
 
     /* USER CODE BEGIN RTOS_QUEUES */
     /* add queues, ... */
     /* USER CODE END RTOS_QUEUES */
 
     /* Create the thread(s) */
-    /* creation of mainTask */
-    mainTaskHandle = osThreadNew(MainTask, NULL, &mainTask_attributes);
+    /* creation of MainTask */
+    MainTaskHandle = osThreadNew(main_task, NULL, &MainTask_attributes);
 
     /* creation of IRreadTask */
-    IRreadTaskHandle = osThreadNew(IRReadTask, NULL, &IRreadTask_attributes);
+    IRreadTaskHandle = osThreadNew(IR_read_task, NULL, &IRreadTask_attributes);
 
-    /* creation of carMoveTask */
-    carMoveTaskHandle = osThreadNew(CarMoveTask, NULL, &carMoveTask_attributes);
+    /* creation of CarMoveTask */
+    CarMoveTaskHandle = osThreadNew(car_move_task, NULL, &CarMoveTask_attributes);
 
-    /* creation of HCSR04readTask */
-    HCSR04readTaskHandle = osThreadNew(HCSR04ReadTask, NULL, &HCSR04readTask_attributes);
+    /* creation of HCSR04ReadTask */
+    HCSR04ReadTaskHandle = osThreadNew(HCSR04_read_task, NULL, &HCSR04ReadTask_attributes);
+
+    /* creation of ControllerTask */
+    ControllerTaskHandle = osThreadNew(controller_task, NULL, &ControllerTask_attributes);
 
     /* USER CODE BEGIN RTOS_THREADS */
     /* add threads, ... */
@@ -432,71 +436,21 @@ int _write(int file, char* ptr, int len)
 }
 /* USER CODE END 4 */
 
-/* USER CODE BEGIN Header_MainTask */
+/* USER CODE BEGIN Header_main_task */
 /**
- * @brief  Function implementing the mainTask thread.
+ * @brief  Function implementing the MainTask thread.
  * @param  argument: Not used
  * @retval None
  */
-/* USER CODE END Header_MainTask */
-void MainTask(void* argument)
+/* USER CODE END Header_main_task */
+__weak void main_task(void* argument)
 {
     /* USER CODE BEGIN 5 */
-    main_task_exec();
+    for (;;)
+    {
+        osDelay(1);
+    }
     /* USER CODE END 5 */
-}
-
-/* USER CODE BEGIN Header_IRReadTask */
-/**
- * @brief Function implementing the IRreadTask thread.
- * @param argument: Not used
- * @retval None
- */
-/* USER CODE END Header_IRReadTask */
-void IRReadTask(void* argument)
-{
-    /* USER CODE BEGIN IRReadTask */
-    /* Infinite loop */
-    IR_read_task_exec();
-    /* USER CODE END IRReadTask */
-}
-
-/* USER CODE BEGIN Header_CarMoveTask */
-/**
- * @brief Function implementing the carMove thread.
- * @param argument: Not used
- * @retval None
- */
-/* USER CODE END Header_CarMoveTask */
-void CarMoveTask(void* argument)
-{
-    /* USER CODE BEGIN CarMoveTask */
-    /* Infinite loop */
-    car_move_task_exec();
-    /* USER CODE END CarMoveTask */
-}
-
-/* USER CODE BEGIN Header_HCSR04ReadTask */
-/**
- * @brief Function implementing the HCSR04readTask thread.
- * @param argument: Not used
- * @retval None
- */
-/* USER CODE END Header_HCSR04ReadTask */
-void HCSR04ReadTask(void* argument)
-{
-    /* USER CODE BEGIN HCSR04ReadTask */
-    /* Infinite loop */
-    HCSR04_read_task_exec();
-    /* USER CODE END HCSR04ReadTask */
-}
-
-/* stopMotorCallback function */
-void stopMotorCallback(void* argument)
-{
-    /* USER CODE BEGIN stopMotorCallback */
-    stop_motor_callback_exec();
-    /* USER CODE END stopMotorCallback */
 }
 
 /**

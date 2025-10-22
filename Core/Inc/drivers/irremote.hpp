@@ -7,6 +7,18 @@ extern "C"
 
 #include "ptimer.hpp"
 
+/***********************************************************
+ * Defines concering IRRemote
+ ***********************************************************/
+#define IR_REPEAT_CHECK(entry)                                               \
+    ((entry.data) == (entry.data_bar) && (entry.data_bar) == (entry.addr) && \
+     (entry.addr) == (entry.addr_bar) && (entry.addr_bar) == 0xFF)
+
+#define SIGNAL_DELAY_US 200
+
+/***********************************************************
+ * IRRemoteEntry struct for IR-decoded readings
+ ***********************************************************/
 struct IRRemoteEntry
 {
     uint16_t addr;
@@ -18,6 +30,9 @@ struct IRRemoteEntry
     bool state;
 };
 
+/***********************************************************
+ * Public GPIO enums for IRREMOTE buttons
+ ***********************************************************/
 enum IRRemoteCode
 {
     IR_REMOTE_OFF           = 0x45,
@@ -48,26 +63,36 @@ enum IRRemoteCode
     IR_REMOTE_REPEAT_CODE = 0xFF  // gets sent when a button is held
 };
 
-#define IR_REPEAT_CHECK(entry)                                               \
-    ((entry.data) == (entry.data_bar) && (entry.data_bar) == (entry.addr) && \
-     (entry.addr) == (entry.addr_bar) && (entry.addr_bar) == 0xFF)
-
+/***************************************************************
+ * DriveSystem class for IR readings
+ ***************************************************************/
 class IRRemote
 {
    private:
-    uint8_t read_byte();
-
+    /***********************************************************
+     * Private Members
+     ***********************************************************/
     GPIO&             m_gpio;
     PTimer<uint32_t>& m_htim;
 
+    /***********************************************************
+     * Private Methods
+     ***********************************************************/
+    uint8_t read_byte();
+
    public:
+    /***********************************************************
+     * Constructors / Destructor
+     ***********************************************************/
     IRRemote() = delete;
     IRRemote(GPIO& gpio, PTimer<uint32_t>& htim) : m_gpio {gpio}, m_htim {htim}
     {
     }
+    ~IRRemote() = default;
 
+    /***********************************************************
+     * Public Methods
+     ***********************************************************/
     IRRemoteEntry receive();
     bool          refresh();
-
-    ~IRRemote() = default;
 };
