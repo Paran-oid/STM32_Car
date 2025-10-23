@@ -88,6 +88,12 @@ void PTimer<T>::pwm_set(uint16_t val, uint8_t channel)
 }
 
 template <typename T>
+T PTimer<T>::pwm_get(uint8_t channel) const
+{
+    return __HAL_TIM_GET_COMPARE(&m_htim, channel);
+}
+
+template <typename T>
 bool PTimer<T>::pwm_stop(uint8_t channel)
 {
     return HAL_TIM_PWM_Stop(&m_htim, channel) == HAL_OK;

@@ -7,7 +7,8 @@
 #include "ptimer.hpp"
 #include "rtos.hpp"
 
-PTimer<uint32_t> tim2 {htim2};  // used for precise delays
+PTimer<uint32_t> tim2 {htim2};
+PTimer<uint16_t> tim3 {htim3};
 
 GPIO     IRControl_gpio = {IRControl_GPIO_Port, IRControl_Pin};
 IRRemote remote         = {IRControl_gpio, tim2};
@@ -15,7 +16,7 @@ IRRemote remote         = {IRControl_gpio, tim2};
 GPIO motor1[] = {{MOTOR1_1_GPIO_Port, MOTOR1_1_Pin}, {MOTOR1_2_GPIO_Port, MOTOR1_2_Pin}};
 GPIO motor2[] = {{MOTOR2_1_GPIO_Port, MOTOR2_1_Pin}, {MOTOR2_2_GPIO_Port, MOTOR2_2_Pin}};
 
-DriveSystem drive_sys = {motor1[0], motor1[1], motor2[0], motor2[1], StopMotorTimerHandle};
+DriveSystem drive_sys = {motor1[0], motor1[1], motor2[0], motor2[1], StopMotorTimerHandle, &tim3};
 
 GPIO   hcsr04_trig = {HCSR04_TRIG_GPIO_Port, HCSR04_TRIG_Pin};
 GPIO   hcsr04_echo = {HCSR04_ECHO_GPIO_Port, HCSR04_ECHO_Pin};
@@ -26,4 +27,5 @@ GPIO buzzer = {BUZZER_GPIO_Port, BUZZER_Pin};
 void hal_init_all()
 {
     tim2.start();
+    tim3.pwm_start(TIM_CHANNEL_1);
 }

@@ -13,11 +13,16 @@ extern "C"
 /***********************************************************
  * Public defines
  ***********************************************************/
-constexpr uint8_t DISTANCE_ALERT_THRESHOLD = 8;  // (cm)
+constexpr uint8_t DISTANCE_ALERT_THRESHOLD = 10;  // (cm)
 
 // default: between 10-202ms signal
 constexpr uint8_t WARNING_DURATION_MULTIPLIER = 24;
 constexpr uint8_t WARNING_DURATION_BASE       = 10;
+
+constexpr uint8_t PWM_SPEED_STEP = 50;
+constexpr uint16_t PWM_SPEED_MAX = 999;
+constexpr uint16_t PWM_SPEED_MIN = 499;
+
 
 /***********************************************************
  * Public GPIO enums for specifying directions
@@ -52,7 +57,8 @@ class DriveSystem
     // motor2(right): in3 and in4
     GPIO &m_gpio_in1, &m_gpio_in2, &m_gpio_in3, &m_gpio_in4;
 
-    osTimerId_t& m_ostim_motor;
+    osTimerId_t&      m_ostim_motor;
+    PTimer<uint16_t>* m_htim_pwm;
 
     /***********************************************************
      * Private Methods
@@ -65,14 +71,17 @@ class DriveSystem
      * Constructors / Destructor
      ***********************************************************/
     DriveSystem() = delete;
-    DriveSystem(GPIO& in1, GPIO& in2, GPIO& in3, GPIO& in4, osTimerId_t& ostim_motor)
+    DriveSystem(GPIO& in1, GPIO& in2, GPIO& in3, GPIO& in4, osTimerId_t& ostim_motor,
+                PTimer<uint16_t>* htim_pwm = nullptr)
         : m_gpio_in1 {in1},
           m_gpio_in2 {in2},
           m_gpio_in3 {in3},
           m_gpio_in4 {in4},
-          m_ostim_motor {ostim_motor}
+          m_ostim_motor {ostim_motor},
+          m_htim_pwm {htim_pwm}
     {
     }
+
     ~DriveSystem() = default;
 
     /***********************************************************

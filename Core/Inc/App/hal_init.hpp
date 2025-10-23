@@ -20,7 +20,8 @@ class HCSR04;
 /***************************************************************
  * HAL generated variables in main.c
  ***************************************************************/
-extern TIM_HandleTypeDef  htim2;
+extern TIM_HandleTypeDef  htim2;  // Precise timer (sensor communications)
+extern TIM_HandleTypeDef  htim3;  // PWM timer (speed motor)
 extern UART_HandleTypeDef huart2;
 
 /***************************************************************

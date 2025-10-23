@@ -14,7 +14,7 @@ extern "C"
     ((entry.data) == (entry.data_bar) && (entry.data_bar) == (entry.addr) && \
      (entry.addr) == (entry.addr_bar) && (entry.addr_bar) == 0xFF)
 
-#define SIGNAL_DELAY_US 200
+constexpr uint8_t SIGNAL_DELAY_US = 200;
 
 /***********************************************************
  * IRRemoteEntry struct for IR-decoded readings

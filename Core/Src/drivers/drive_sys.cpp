@@ -67,7 +67,7 @@ void DriveSystem::move(CarDirection direction)
 void DriveSystem::execute(IRRemoteCode code)
 {
     static CarDirection direction = CAR_STATIONARY;
-    // map IR code to direction
+    // maps IR code to direction
     switch (code)
     {
         case IR_REMOTE_2:
@@ -103,7 +103,24 @@ void DriveSystem::execute(IRRemoteCode code)
             break;
 
         case IR_REMOTE_REPEAT_CODE:
-            // just use same direction used previously
+            // just use same direction used previously (no code written on purpose)
+            break;
+
+        case IR_REMOTE_VOL_UP:
+        case IR_REMOTE_VOL_DOWN:
+            if (!m_htim_pwm) break;
+            {
+                uint16_t cmp_val = m_htim_pwm->pwm_get(TIM_CHANNEL_1);
+                if (cmp_val < PWM_SPEED_MAX && code == IR_REMOTE_VOL_UP)
+                {
+                    cmp_val += PWM_SPEED_STEP;
+                }
+                else if (cmp_val > PWM_SPEED_MIN && code == IR_REMOTE_VOL_DOWN)
+                {
+                    cmp_val -= PWM_SPEED_STEP;
+                }
+                m_htim_pwm->pwm_set(cmp_val, TIM_CHANNEL_1);
+            }
             break;
 
         case IR_REMOTE_MUTE:

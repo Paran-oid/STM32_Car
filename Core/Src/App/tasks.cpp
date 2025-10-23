@@ -23,7 +23,6 @@ void MainTask(void* argument)
     osThreadTerminate(NULL);
 }
 
-// TODO: try to use externs less
 void IR_read_task(void* argument)
 {
     while (1)
@@ -51,16 +50,44 @@ void IR_read_task(void* argument)
 // TODO: try to optimize code by using references (&) and pointers and such and avoid
 // TODO: copying
 
-// TODO: don't use #defines for constant expressions rather use constexpr
 void car_move_task(void* argument)
 {
-    void* req;  // received request pointer
+    while (1)
+    {
+        osDelay(1);
+    }
+    osThreadTerminate(NULL);
+}
+
+void HCSR04_read_task(void* argument)
+{
+    while (1)
+    {
+        int16_t distance = hcsr04.retrieve();
+
+        if (distance <= -1) continue;
+
+        if (distance <= DISTANCE_ALERT_THRESHOLD ||
+            (is_warning && distance > DISTANCE_ALERT_THRESHOLD))
+        {
+            SensorRequest<int16_t> req = {DISTANCE_ALERT, distance};
+            rtos_queue_send(req, sensorQueueHandle);
+        }
+
+        osDelay(150);
+    }
+    osThreadTerminate(NULL);
+}
+
+void controller_task(void* argument)
+{
+    void* req;
     while (1)
     {
         osDelay(1);
 
         if (osMessageQueueGet(sensorQueueHandle, &req, NULL, osWaitForever) != osOK) continue;
-        uint8_t code = *(reinterpret_cast<uint8_t*>(req));
+        uint8_t& code = *(reinterpret_cast<uint8_t*>(req));
 
         switch (code)
         {
@@ -74,48 +101,29 @@ void car_move_task(void* argument)
 
                 drive_sys.execute((IRRemoteCode) entry.data);
 
-                osTimerStart(StopMotorTimerHandle, SIGNAL_DELAY_US + 100);
+                osTimerStart(
+                    StopMotorTimerHandle,
+                    SIGNAL_DELAY_US + 100);  // 100 ms offset so that car doesn't stop abruptly
             }
             break;
             case DISTANCE_ALERT:
             {
-                static int16_t previous_distance = 0;
-
                 SensorRequest<int16_t>* parsed   = reinterpret_cast<SensorRequest<int16_t>*>(req);
                 int16_t&                distance = parsed->content;
 
                 if (distance <= DISTANCE_ALERT_THRESHOLD)
                 {
-                    uint32_t warning_duration =
-                        distance * WARNING_DURATION_MULTIPLIER + WARNING_DURATION_BASE;
-
                     if (!is_warning)
                     {
                         is_warning = true;
-                        osTimerStart(StopWarningTimerHandle, warning_duration);
+                        osTimerStart(StopWarningTimerHandle, STOP_WARNING_TIMER_DELAY);
                     }
-
-                    else if (distance != previous_distance)
-                    {
-                        osMutexAcquire(DistanceWarnerMutexHandle, osWaitForever);
-
-                        osTimerStop(StopWarningTimerHandle);
-                        osTimerStart(StopWarningTimerHandle, warning_duration);
-
-                        osMutexRelease(DistanceWarnerMutexHandle);
-                    }
-
-                    previous_distance = distance;
                 }
                 else if (is_warning)
                 {
-                    osMutexAcquire(DistanceWarnerMutexHandle, osWaitForever);
-
                     osTimerStop(StopWarningTimerHandle);
                     buzzer.state_set(LOW);
                     is_warning = false;
-
-                    osMutexRelease(DistanceWarnerMutexHandle);
                 }
                 break;
             }
@@ -123,35 +131,6 @@ void car_move_task(void* argument)
 
         osMemoryPoolFree(MemPoolHandle, req);
 
-        osDelay(1);
-    }
-    osThreadTerminate(NULL);
-}
-
-void HCSR04_read_task(void* argument)
-{
-    int16_t distance = 0;
-
-    while (1)
-    {
-        distance = hcsr04.retrieve();
-        if (distance == -1) continue;
-
-        if (distance <= 10 || (is_warning && distance > 10))
-        {
-            SensorRequest<int16_t> req = {DISTANCE_ALERT, distance};
-            rtos_queue_send(req, sensorQueueHandle);
-        }
-
-        osDelay(50);
-    }
-    osThreadTerminate(NULL);
-}
-
-void controller_task(void* argument)
-{
-    while (1)
-    {
         osDelay(1);
     }
 }

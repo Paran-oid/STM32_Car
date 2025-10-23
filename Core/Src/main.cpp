@@ -6,16 +6,20 @@
 /**
  * TODO LIST
  *
- * ! Fourth part (1):
- * * - Reintroduce speed timer (PWM)
+ * ! Fourth part: *
+ * * - Do all your TODO tasks
  * * - Read value of battery
  * * - blink a led if battery too low (make too leds for both power sources)
+ * * - Make sure we save as much battery as possible (through sleep modes)
+ *
+ * ! Fifth part:
+ * * - Clean code and optimize it significantly
  * * - Add bluetooth
  *
  * ! Last part:
- * * - Make sure we save as much battery as possible (through sleep modes)
  * * - Introduce error handling (along with error codes)
  * * - Enhance documentation and verify that every module is explained throughthly
+ * * - Once again optimize and clean the project
  * * - Write with the use of AI a good README.md and add a video of the project
  *
  *

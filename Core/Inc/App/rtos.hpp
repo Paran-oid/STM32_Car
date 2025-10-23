@@ -7,6 +7,10 @@ extern "C"
 
 #include <stdio.h>
 #include <string.h>
+/***************************************************************
+ * Public defines
+ ***************************************************************/
+constexpr uint8_t STOP_WARNING_TIMER_DELAY = 100;
 
 /***************************************************************
  * HAL generated variables in main.c
@@ -25,9 +29,6 @@ extern const osTimerAttr_t StopWarningTimer_attributes;
 
 extern osMutexId_t         HTIM3MutexHandle;
 extern const osMutexAttr_t htim3Mutex_attributes;
-
-extern osMutexId_t         DistanceWarnerMutexHandle;
-extern const osMutexAttr_t DistanceWarnerMutex_attributes;
 
 /***************************************************************
  * Exported objects

@@ -9,6 +9,12 @@ extern "C"
 #include "ptimer.hpp"
 
 /***********************************************************
+ * Public defines
+ ***********************************************************/
+constexpr uint16_t HCSR04_MIN_RANGE = 2;
+constexpr uint16_t HCSR04_MAX_RANGE = 400;
+
+/***********************************************************
  * HCSR04 class related to anything concering the sensor
  ***********************************************************/
 class HCSR04
