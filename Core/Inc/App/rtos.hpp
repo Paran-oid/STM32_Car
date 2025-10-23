@@ -5,6 +5,9 @@ extern "C"
 #include "cmsis_os2.h"
 }
 
+#include <stdio.h>
+#include <string.h>
+
 /***************************************************************
  * HAL generated variables in main.c
  ***************************************************************/
@@ -20,8 +23,11 @@ extern const osTimerAttr_t StopMotorTimer_attributes;
 extern osTimerId_t         StopWarningTimerHandle;
 extern const osTimerAttr_t StopWarningTimer_attributes;
 
-extern osMutexId_t         ptimerMutexHandle;
-extern const osMutexAttr_t ptimerMutex_attributes;
+extern osMutexId_t         HTIM3MutexHandle;
+extern const osMutexAttr_t htim3Mutex_attributes;
+
+extern osMutexId_t         DistanceWarnerMutexHandle;
+extern const osMutexAttr_t DistanceWarnerMutex_attributes;
 
 /***************************************************************
  * Exported objects
@@ -32,10 +38,24 @@ volatile extern bool is_warning;
 /***************************************************************
  * Function declarations
  ***************************************************************/
-void rtos_init_all();
 
 extern "C"
 {
     void stop_motor_callback(void* argument);
     void stop_warning_timer(void* argument);
+}
+
+void rtos_init_all();
+
+template <typename T>
+bool rtos_queue_send(T data, osMessageQueueId_t queue)
+{
+    void* item = osMemoryPoolAlloc(MemPoolHandle, osWaitForever);
+    if (!item)
+    {
+        printf("couldn't allocate item in memory pool to be sent to the queue...");
+        while (1);
+    }
+    memcpy(item, &data, sizeof(data));
+    return osMessageQueuePut(sensorQueueHandle, &item, 0, osWaitForever) == osOK;
 }

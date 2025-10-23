@@ -35,12 +35,20 @@ IRRemoteEntry IRRemote::receive()
     // transmission start
     if (!m_htim.delay_until(m_gpio, LOW, 1)) return {0, 0, false};
 
-    osMutexAcquire(ptimerMutexHandle, osWaitForever);
+    osMutexAcquire(HTIM3MutexHandle, osWaitForever);
 
     m_htim.reset();
 
-    if (!(m_htim.delay_until(m_gpio, HIGH, 9500))) return {0, 0, false};  // Leader mark (~9ms)
-    if (!(m_htim.delay_until(m_gpio, LOW, 4600))) return {0, 0, false};   // Leader space (~4.5ms)
+    if (!(m_htim.delay_until(m_gpio, HIGH, 9500)))
+    {
+        osMutexRelease(HTIM3MutexHandle);
+        return {0, 0, false};  // Leader mark (~9ms)
+    }
+    if (!(m_htim.delay_until(m_gpio, LOW, 4600)))
+    {
+        osMutexRelease(HTIM3MutexHandle);
+        return {0, 0, false};  // Leader space (~4.5ms)
+    }
 
     IRRemoteEntry entry = {0, 0, 0, 0, true};
 
@@ -52,17 +60,17 @@ IRRemoteEntry IRRemote::receive()
 
     if (IR_REPEAT_CHECK(entry))
     {
-        osMutexRelease(ptimerMutexHandle);
+        osMutexRelease(HTIM3MutexHandle);
         return entry;
     }
 
     if ((entry.addr ^ entry.addr_bar) != 0xFF || (entry.data ^ entry.data_bar) != 0xFF)
     {
-        osMutexRelease(ptimerMutexHandle);
+        osMutexRelease(HTIM3MutexHandle);
         return {0, 0, 0, 0, false};
     }
 
-    osMutexRelease(ptimerMutexHandle);
+    osMutexRelease(HTIM3MutexHandle);
     return entry;
 }
 

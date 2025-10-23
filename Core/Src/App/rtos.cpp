@@ -16,7 +16,11 @@ void stop_warning_timer(void* argument)
 {
     if (is_warning)
     {
-        buzzer.state_toggle();
+        if (osMutexAcquire(DistanceWarnerMutexHandle, 0) == osOK)
+        {
+            buzzer.state_toggle();
+            osMutexRelease(DistanceWarnerMutexHandle);
+        }
     }
 }
 

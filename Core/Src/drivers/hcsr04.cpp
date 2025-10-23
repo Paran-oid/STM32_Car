@@ -6,7 +6,7 @@
 
 int16_t HCSR04::retrieve()
 {
-    osMutexAcquire(ptimerMutexHandle, osWaitForever);
+    osMutexAcquire(HTIM3MutexHandle, osWaitForever);
 
     this->m_trig.state_set(HIGH);
     m_htim.delay_us(10);
@@ -14,14 +14,14 @@ int16_t HCSR04::retrieve()
 
     if (!m_htim.delay_until(m_echo, HIGH, 5000))
     {
-        osMutexRelease(ptimerMutexHandle);
+        osMutexRelease(HTIM3MutexHandle);
         return -1;
     }
     m_htim.reset();
 
     if (!m_htim.delay_until(m_echo, LOW, 5000))
     {
-        osMutexRelease(ptimerMutexHandle);
+        osMutexRelease(HTIM3MutexHandle);
         return -1;
     }
 
@@ -29,7 +29,7 @@ int16_t HCSR04::retrieve()
 
     float distance_cm = (elapsed_us * 0.017f);  // 340 / (2 * 1000)
 
-    osMutexRelease(ptimerMutexHandle);
+    osMutexRelease(HTIM3MutexHandle);
 
     return (int16_t) distance_cm;
 }

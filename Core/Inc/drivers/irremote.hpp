@@ -8,7 +8,7 @@ extern "C"
 #include "ptimer.hpp"
 
 /***********************************************************
- * Defines concering IRRemote
+ * Public defines
  ***********************************************************/
 #define IR_REPEAT_CHECK(entry)                                               \
     ((entry.data) == (entry.data_bar) && (entry.data_bar) == (entry.addr) && \

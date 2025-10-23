@@ -91,9 +91,12 @@ const osTimerAttr_t StopMotorTimer_attributes = {.name = "StopMotorTimer"};
 /* Definitions for StopWarningTimer */
 osTimerId_t         StopWarningTimerHandle;
 const osTimerAttr_t StopWarningTimer_attributes = {.name = "StopWarningTimer"};
-/* Definitions for ptimerMutex */
-osMutexId_t         ptimerMutexHandle;
-const osMutexAttr_t ptimerMutex_attributes = {.name = "ptimerMutex"};
+/* Definitions for HTIM3Mutex */
+osMutexId_t         HTIM3MutexHandle;
+const osMutexAttr_t HTIM3Mutex_attributes = {.name = "HTIM3Mutex"};
+/* Definitions for DistanceWarnerMutex */
+osMutexId_t         DistanceWarnerMutexHandle;
+const osMutexAttr_t DistanceWarnerMutex_attributes = {.name = "DistanceWarnerMutex"};
 /* USER CODE BEGIN PV */
 osMemoryPoolId_t   MemPoolHandle;
 osMemoryPoolAttr_t MemPool_attributes = {.name = "mem_pool"};
@@ -159,8 +162,11 @@ int main(void)
     /* Init scheduler */
     osKernelInitialize();
     /* Create the mutex(es) */
-    /* creation of ptimerMutex */
-    ptimerMutexHandle = osMutexNew(&ptimerMutex_attributes);
+    /* creation of HTIM3Mutex */
+    HTIM3MutexHandle = osMutexNew(&HTIM3Mutex_attributes);
+
+    /* creation of DistanceWarnerMutex */
+    DistanceWarnerMutexHandle = osMutexNew(&DistanceWarnerMutex_attributes);
 
     /* USER CODE BEGIN RTOS_MUTEX */
     /* add mutexes, ... */

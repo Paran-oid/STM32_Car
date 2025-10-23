@@ -11,7 +11,7 @@ extern "C"
 enum SensorRequestCode : uint8_t
 {
     IR_SIGNAL = 0,
-    BUZZER_ON
+    DISTANCE_ALERT
 };
 
 template <typename T>
@@ -19,7 +19,7 @@ struct SensorRequest
 {
     SensorRequestCode code;
     T                 content;
-} __attribute__((packed));
+};
 
 /***************************************************************
  * Function declarations

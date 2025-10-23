@@ -11,6 +11,15 @@ extern "C"
 #include "ptimer.hpp"
 
 /***********************************************************
+ * Public defines
+ ***********************************************************/
+constexpr uint8_t DISTANCE_ALERT_THRESHOLD = 8;  // (cm)
+
+// default: between 10-202ms signal
+constexpr uint8_t WARNING_DURATION_MULTIPLIER = 24;
+constexpr uint8_t WARNING_DURATION_BASE       = 10;
+
+/***********************************************************
  * Public GPIO enums for specifying directions
  ***********************************************************/
 enum CarDirection
