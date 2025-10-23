@@ -19,7 +19,6 @@ void MainTask(void* argument)
     {
         osDelay(1);
     }
-
     osThreadTerminate(NULL);
 }
 
@@ -42,18 +41,6 @@ void IR_read_task(void* argument)
             is_cmd_sent = false;
         }
 
-        osDelay(1);
-    }
-    osThreadTerminate(NULL);
-}
-
-// TODO: try to optimize code by using references (&) and pointers and such and avoid
-// TODO: copying
-
-void car_move_task(void* argument)
-{
-    while (1)
-    {
         osDelay(1);
     }
     osThreadTerminate(NULL);

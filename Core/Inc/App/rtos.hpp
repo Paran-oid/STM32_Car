@@ -51,7 +51,7 @@ void rtos_init_all();
 template <typename T>
 bool rtos_queue_send(T data, osMessageQueueId_t queue)
 {
-    void* item = osMemoryPoolAlloc(MemPoolHandle, osWaitForever);
+    T* item = (T*) osMemoryPoolAlloc(MemPoolHandle, osWaitForever);
     if (!item)
     {
         printf("couldn't allocate item in memory pool to be sent to the queue...");

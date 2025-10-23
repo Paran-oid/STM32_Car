@@ -4,10 +4,10 @@
 #include "tasks.hpp"
 
 /**
- * TODO LIST
+ * TODO LIST:
  *
  * ! Fourth part: *
- * * - Do all your TODO tasks
+ * * - Show level of speed (maybe)
  * * - Read value of battery
  * * - blink a led if battery too low (make too leds for both power sources)
  * * - Make sure we save as much battery as possible (through sleep modes)
@@ -48,6 +48,6 @@ extern "C"
 
     void main_loop(void)
     {
-        loop();
+        loop();  // should never be reached
     }
 }

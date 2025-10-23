@@ -60,13 +60,6 @@ const osThreadAttr_t IRreadTask_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
-/* Definitions for CarMoveTask */
-osThreadId_t CarMoveTaskHandle;
-const osThreadAttr_t CarMoveTask_attributes = {
-  .name = "CarMoveTask",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
-};
 /* Definitions for HCSR04ReadTask */
 osThreadId_t HCSR04ReadTaskHandle;
 const osThreadAttr_t HCSR04ReadTask_attributes = {
@@ -114,7 +107,6 @@ static void MX_TIM2_Init(void);
 static void MX_TIM3_Init(void);
 void main_task(void *argument);
 extern void IR_read_task(void *argument);
-extern void car_move_task(void *argument);
 extern void HCSR04_read_task(void *argument);
 extern void controller_task(void *argument);
 extern void stop_motor_callback(void *argument);
@@ -205,9 +197,6 @@ int main(void)
 
   /* creation of IRreadTask */
   IRreadTaskHandle = osThreadNew(IR_read_task, NULL, &IRreadTask_attributes);
-
-  /* creation of CarMoveTask */
-  CarMoveTaskHandle = osThreadNew(car_move_task, NULL, &CarMoveTask_attributes);
 
   /* creation of HCSR04ReadTask */
   HCSR04ReadTaskHandle = osThreadNew(HCSR04_read_task, NULL, &HCSR04ReadTask_attributes);
