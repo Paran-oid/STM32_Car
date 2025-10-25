@@ -1,19 +1,5 @@
 # Ideas
 
-Infrared or LIDAR sensors for better obstacle detection beyond the ultrasonic’s range.
-
-Wheel encoders for precise speed/distance control.
-
-Gyroscope/Accelerometer (IMU) for tilt, acceleration, and stability monitoring.
-
-Temperature monitoring for motor and battery to prevent overheating.
-
-Battery voltage/current monitoring to implement low-battery shutdown or alerts.
-
-Ambient light sensor to adjust LED brightness or trigger night mode.
-
-Collision detection using bump switches for redundancy.
-
 Control & Navigation
 
 PID control for motors to improve smoothness and precise movement.
@@ -29,8 +15,6 @@ Speed profiles (accelerate/decelerate curves) to prevent tipping.
 Communication
 
 Bluetooth + Wi-Fi fallback: control car remotely via phone or computer.
-
-Send telemetry data (speed, battery, sensor readings) to an app.
 
 OTA firmware updates via Wi-Fi if you integrate ESP32/STM32 networking.
 

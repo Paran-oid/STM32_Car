@@ -19,10 +19,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "FreeRTOS.h"
-
-#include "main.h"
 #include "task.h"
-
+#include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -51,24 +49,37 @@
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
-extern void SystemClock_Config(void);
 /* USER CODE END FunctionPrototypes */
+
+/* Hook prototypes */
+void vApplicationIdleHook(void);
+
+/* USER CODE BEGIN 2 */
+void vApplicationIdleHook(void)
+{
+    /* vApplicationIdleHook() will only be called if configUSE_IDLE_HOOK is set
+    to 1 in FreeRTOSConfig.h. It will be called on each iteration of the idle
+    task. It is essential that code added to this hook function never attempts
+    to block in any way (for example, call xQueueReceive() with a block time
+    specified, or call vTaskDelay()). If the application makes use of the
+    vTaskDelete() API function (as this demo application does) then it is also
+    important that vApplicationIdleHook() is permitted to return to its calling
+    function, because it is the responsibility of the idle task to clean up
+    memory allocated by the kernel to any task that has since been deleted. */
+
+    __WFI();
+}
+/* USER CODE END 2 */
 
 /* USER CODE BEGIN PREPOSTSLEEP */
 __weak void PreSleepProcessing(uint32_t ulExpectedIdleTime)
 {
-    /* place for user code */
-    // HAL_SuspendTick();
-    // HAL_PWR_EnterSLEEPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
-
-    __WFI();
+/* place for user code */
 }
 
 __weak void PostSleepProcessing(uint32_t ulExpectedIdleTime)
 {
-    /* place for user code */
-    // SystemClock_Config();  // wake CPU up
-    // HAL_ResumeTick();
+/* place for user code */
 }
 /* USER CODE END PREPOSTSLEEP */
 
@@ -76,3 +87,4 @@ __weak void PostSleepProcessing(uint32_t ulExpectedIdleTime)
 /* USER CODE BEGIN Application */
 
 /* USER CODE END Application */
+

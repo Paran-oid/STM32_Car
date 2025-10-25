@@ -47,6 +47,15 @@ else()
     message("-O3 flag(s) set")
 endif()
 
+# -O3 → high-level optimization
+# -flto → link-time optimization (lets the linker optimize across all files)
+# -ffunction-sections / -fdata-sections → places each function/variable in its own section
+# --gc-sections → removes all unused code
+# -fno-exceptions / -fno-rtti → removes huge C++ runtime bloat (especially from newlib)
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ffunction-sections -fdata-sections -fno-exceptions")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti")
+
 # Create an executable object type
 add_executable(${CMAKE_PROJECT_NAME})
 
