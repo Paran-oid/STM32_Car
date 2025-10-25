@@ -12,23 +12,27 @@ extern "C"
 #include "irremote.hpp"
 #include "rtos.hpp"
 
-void MainTask(void* argument)
+// TODO: include more interrupts in the program
+// TODO: consider including DMA for some things
+void main_task(void* argument)
 {
-    // background task
+    /* USER CODE BEGIN 5 */
     while (1)
     {
-        osDelay(1);
+        HAL_IWDG_Refresh(&hiwdg);  // reset watch dog timer of 4 seconds
+        osDelay(1000);
     }
     osThreadTerminate(NULL);
+    /* USER CODE END 5 */
 }
 
 void IR_read_task(void* argument)
 {
     while (1)
     {
-        osDelay(1);
+        if (osSemaphoreAcquire(IRSemHandle, osWaitForever) != osOK) continue;
 
-        IRRemoteEntry entry = remote.receive();
+        IRRemoteEntry entry = remote.retrieve();
         if (entry.is_valid)
         {
             SensorRequest<IRRemoteEntry> req = {IR_SIGNAL, entry};
@@ -41,8 +45,10 @@ void IR_read_task(void* argument)
             is_cmd_sent = false;
         }
 
-        osDelay(1);
+        HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+        // osDelay(1); (not needed because it's event-driven)
     }
+
     osThreadTerminate(NULL);
 }
 
@@ -61,8 +67,9 @@ void HCSR04_read_task(void* argument)
             rtos_queue_send(req, sensorQueueHandle);
         }
 
-        osDelay(150);
+        osDelay(100);
     }
+
     osThreadTerminate(NULL);
 }
 
@@ -71,8 +78,6 @@ void controller_task(void* argument)
     void* req;
     while (1)
     {
-        osDelay(1);
-
         if (osMessageQueueGet(sensorQueueHandle, &req, NULL, osWaitForever) != osOK) continue;
         uint8_t& code = *(reinterpret_cast<uint8_t*>(req));
 
@@ -100,15 +105,14 @@ void controller_task(void* argument)
 
                 if (distance <= DISTANCE_ALERT_THRESHOLD)
                 {
-                    if (!is_warning)
-                    {
-                        is_warning = true;
-                        osTimerStart(StopWarningTimerHandle, STOP_WARNING_TIMER_DELAY);
-                    }
+                    if (!is_warning) is_warning = true;
+
+                    if (!osTimerIsRunning(BuzzerToggleTimerHandle))
+                        osTimerStart(BuzzerToggleTimerHandle, buzzer_toggle_callback_DELAY);
                 }
-                else if (is_warning)
+                else if (is_warning && distance > DISTANCE_ALERT_THRESHOLD)
                 {
-                    osTimerStop(StopWarningTimerHandle);
+                    osTimerStop(BuzzerToggleTimerHandle);
                     buzzer.state_set(LOW);
                     is_warning = false;
                 }
@@ -117,7 +121,8 @@ void controller_task(void* argument)
         }
 
         osMemoryPoolFree(MemPoolHandle, req);
-
-        osDelay(1);
+        // osDelay(1) (not needed because it's event-driven);
     }
+
+    osThreadTerminate(NULL);
 }

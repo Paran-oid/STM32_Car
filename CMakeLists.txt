@@ -36,6 +36,17 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Flag confiugration for C and C++
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Og -g3")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Og -g3")
+    message("-Og -g3 flag(s) set")
+else()
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+    message("-O3 flag(s) set")
+endif()
+
 # Create an executable object type
 add_executable(${CMAKE_PROJECT_NAME})
 
@@ -55,6 +66,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/App/rtos.cpp
     Core/Src/App/hal_init.cpp
     Core/Src/App/tasks.cpp
+    Core/Src/App/interrupts.cpp
 
 
     Core/Src/drivers/irremote.cpp

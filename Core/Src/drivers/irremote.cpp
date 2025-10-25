@@ -30,16 +30,9 @@ uint8_t IRRemote::read_byte()
     return res;
 }
 
-IRRemoteEntry IRRemote::receive()
+IRRemoteEntry IRRemote::retrieve()
 {
     if (osMutexAcquire(HTIM3MutexHandle, osWaitForever) != osOK) return {0, 0, false};
-
-    // transmission start
-    if (!m_htim.delay_until(m_gpio, LOW, 1))
-    {
-        osMutexRelease(HTIM3MutexHandle);
-        return {0, 0, false};
-    }
 
     m_htim.reset();
 

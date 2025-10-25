@@ -53,9 +53,16 @@ class PTimer
     bool     delay_until(GPIO& gpio, GPIOState expected_state, T period_us);
 
     // pulse-width modulation generation
-    bool pwm_start(uint8_t channel);
-    void pwm_set(uint16_t val, uint8_t channel);
-    T    pwm_get(uint8_t channel) const;
+    bool        pwm_start(uint8_t channel);
+    inline void pwm_set(uint16_t val, uint8_t channel)
+    {
+        __HAL_TIM_SET_COMPARE(&m_htim, channel, val);
+    }
+    inline T pwm_get(uint8_t channel) const
+    {
+        return __HAL_TIM_GET_COMPARE(&m_htim, channel);
+    }
+
     bool pwm_stop(uint8_t channel);
 
     inline void reset() const

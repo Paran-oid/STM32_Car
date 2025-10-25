@@ -1,5 +1,4 @@
 #pragma once
-
 extern "C"
 {
 #include "main.h"
@@ -8,10 +7,8 @@ extern "C"
 /***************************************************************
  * Function declarations
  ***************************************************************/
+
 extern "C"
 {
-    void main_task(void* argument);
-    void IR_read_task(void* argument);
-    void HCSR04_read_task(void* argument);
-    void controller_task(void* argument);
+    void HAL_GPIO_EXTI_Callback(uint16_t gpio_pin);
 }

@@ -93,6 +93,11 @@ class IRRemote
     /***********************************************************
      * Public Methods
      ***********************************************************/
-    IRRemoteEntry receive();
+    IRRemoteEntry retrieve();
     bool          refresh();
 };
+
+bool IR_repeat_check(const IRRemoteEntry& entry)
+{
+    
+}

@@ -19,15 +19,16 @@ constexpr uint8_t DISTANCE_ALERT_THRESHOLD = 10;  // (cm)
 constexpr uint8_t WARNING_DURATION_MULTIPLIER = 24;
 constexpr uint8_t WARNING_DURATION_BASE       = 10;
 
-constexpr uint8_t PWM_SPEED_STEP = 50;
-constexpr uint16_t PWM_SPEED_MAX = 999;
-constexpr uint16_t PWM_SPEED_MIN = 499;
+constexpr uint8_t  PWM_SPEED_STEP = 50;
+constexpr uint16_t PWM_SPEED_MAX  = 999;
+constexpr uint16_t PWM_SPEED_MIN  = 499;
 
+constexpr uint16_t BUZZER_SIGNAL = 200;
 
 /***********************************************************
  * Public GPIO enums for specifying directions
  ***********************************************************/
-enum CarDirection
+enum CarDirection : uint8_t
 {
     CAR_FORWARD,
     CAR_BACKWARD,
@@ -64,7 +65,7 @@ class DriveSystem
      * Private Methods
      ***********************************************************/
     void pins_set(bool in1, bool in2, bool in3, bool in4);
-    void move(CarDirection direction);
+    void move(const CarDirection& direction);
 
    public:
     /***********************************************************
@@ -87,5 +88,5 @@ class DriveSystem
     /***********************************************************
      * Public Methods
      ***********************************************************/
-    void execute(IRRemoteCode code);
+    void execute(const IRRemoteCode& code);
 };

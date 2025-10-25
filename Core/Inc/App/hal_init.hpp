@@ -24,6 +24,8 @@ extern TIM_HandleTypeDef  htim2;  // Precise timer (sensor communications)
 extern TIM_HandleTypeDef  htim3;  // PWM timer (speed motor)
 extern UART_HandleTypeDef huart2;
 
+extern IWDG_HandleTypeDef hiwdg;
+
 /***************************************************************
  * Exported objects
  ***************************************************************/

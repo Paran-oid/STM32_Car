@@ -10,7 +10,7 @@ extern "C"
 /***************************************************************
  * Public defines
  ***************************************************************/
-constexpr uint8_t STOP_WARNING_TIMER_DELAY = 100;
+constexpr uint8_t buzzer_toggle_callback_DELAY = 100;
 
 /***************************************************************
  * HAL generated variables in main.c
@@ -24,17 +24,39 @@ extern const osMessageQueueAttr_t sensorQueue_attributes;
 extern osTimerId_t         StopMotorTimerHandle;
 extern const osTimerAttr_t StopMotorTimer_attributes;
 
-extern osTimerId_t         StopWarningTimerHandle;
-extern const osTimerAttr_t StopWarningTimer_attributes;
+extern osTimerId_t         BuzzerToggleTimerHandle;
+extern const osTimerAttr_t BuzzerToggleTimer_attributes;
 
 extern osMutexId_t         HTIM3MutexHandle;
 extern const osMutexAttr_t htim3Mutex_attributes;
+
+extern osSemaphoreId_t         IRSemHandle;
+extern const osSemaphoreAttr_t IRSem_attributes;
 
 /***************************************************************
  * Exported objects
  ***************************************************************/
 volatile extern bool is_cmd_sent;
 volatile extern bool is_warning;
+
+/***********************************************************
+ * Public GPIO enums for specifying instruction type
+ ***********************************************************/
+enum SensorRequestCode : uint8_t
+{
+    IR_SIGNAL = 0,
+    DISTANCE_ALERT
+};
+
+/***********************************************************
+ * Sensor request struct for data commnunication between tasks
+ ***********************************************************/
+template <typename T>
+struct SensorRequest
+{
+    SensorRequestCode code;
+    T                 content;
+};
 
 /***************************************************************
  * Function declarations
@@ -43,13 +65,13 @@ volatile extern bool is_warning;
 extern "C"
 {
     void stop_motor_callback(void* argument);
-    void stop_warning_timer(void* argument);
+    void buzzer_toggle_callback(void* argument);
 }
 
 void rtos_init_all();
 
 template <typename T>
-bool rtos_queue_send(T data, osMessageQueueId_t queue)
+bool rtos_queue_send(const T& data, osMessageQueueId_t queue)
 {
     T* item = (T*) osMemoryPoolAlloc(MemPoolHandle, osWaitForever);
     if (!item)

@@ -5,6 +5,9 @@ extern "C"
 #include "cmsis_os.h"
 }
 
+#include "hal_init.hpp"
+#include "rtos.hpp"
+
 void DriveSystem::pins_set(bool in1, bool in2, bool in3, bool in4)
 {
     m_gpio_in1.state_set(in1 ? HIGH : LOW);
@@ -111,15 +114,24 @@ void DriveSystem::execute(IRRemoteCode code)
             if (!m_htim_pwm) break;
             {
                 uint16_t cmp_val = m_htim_pwm->pwm_get(TIM_CHANNEL_1);
-                if (cmp_val < PWM_SPEED_MAX && code == IR_REMOTE_VOL_UP)
+
+                const bool can_increase = cmp_val < PWM_SPEED_MAX;
+                const bool can_decrease = cmp_val > PWM_SPEED_MIN;
+
+                if (!can_increase && !can_decrease) break;
+
+                if (can_increase && code == IR_REMOTE_VOL_UP)
                 {
                     cmp_val += PWM_SPEED_STEP;
                 }
-                else if (cmp_val > PWM_SPEED_MIN && code == IR_REMOTE_VOL_DOWN)
+                else if (can_decrease && code == IR_REMOTE_VOL_DOWN)
                 {
                     cmp_val -= PWM_SPEED_STEP;
                 }
+                
                 m_htim_pwm->pwm_set(cmp_val, TIM_CHANNEL_1);
+                buzzer.state_set(HIGH);
+                osTimerStart(BuzzerToggleTimerHandle, 200);
             }
             break;
 

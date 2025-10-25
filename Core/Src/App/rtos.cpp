@@ -15,12 +15,9 @@ void stop_motor_callback(void* argument)
     }
 }
 
-void stop_warning_timer(void* argument)
+void buzzer_toggle_callback(void* argument)
 {
-    if (is_warning)
-    {
-        buzzer.state_toggle();
-    }
+    buzzer.state_toggle();
 }
 
 void rtos_init_all()

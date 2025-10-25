@@ -6,20 +6,15 @@
 /**
  * TODO LIST:
  *
- * ! Fourth part: *
- * * - Show level of speed (maybe)
- * * - Read value of battery
- * * - blink a led if battery too low (make too leds for both power sources)
- * * - Make sure we save as much battery as possible (through sleep modes)
- *
  * ! Fifth part:
  * * - Clean code and optimize it significantly
  * * - Add bluetooth
+ * * - Add self drive mode (black lines detector)
  *
  * ! Last part:
  * * - Introduce error handling (along with error codes)
  * * - Enhance documentation and verify that every module is explained throughthly
- * * - Once again optimize and clean the project
+ * * - Once again optimize and clean the project (verify that power is used efficently too)
  * * - Write with the use of AI a good README.md and add a video of the project
  *
  *
