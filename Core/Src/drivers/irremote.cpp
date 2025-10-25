@@ -4,19 +4,16 @@
 
 uint8_t IRRemote::read_byte()
 {
-    uint8_t res, bit;
-    res = bit = 0;
+    uint8_t res = 0;
     for (uint8_t i = 0; i < 8; i++)
     {
         while (m_gpio.state_get() != HIGH);
 
         m_htim.reset();
+
         while (m_gpio.state_get() != LOW)
         {
-            if (m_htim.elapsed_us() >= 2000)
-            {
-                break;
-            }
+            if (m_htim.elapsed_us() >= 2000) break;
         }
 
         uint32_t elapsed = m_htim.elapsed_us();
@@ -55,7 +52,7 @@ IRRemoteEntry IRRemote::retrieve()
     entry.data     = read_byte();
     entry.data_bar = read_byte();
 
-    if (IR_REPEAT_CHECK(entry))
+    if (IR_repeat_check(entry))
     {
         osMutexRelease(HTIM3MutexHandle);
         return entry;
@@ -69,9 +66,4 @@ IRRemoteEntry IRRemote::retrieve()
 
     osMutexRelease(HTIM3MutexHandle);
     return entry;
-}
-
-bool IRRemote::refresh()
-{
-    return m_htim.delay_until(m_gpio, LOW, 100);
 }

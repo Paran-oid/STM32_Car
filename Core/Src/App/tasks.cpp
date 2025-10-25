@@ -32,10 +32,10 @@ void IR_read_task(void* argument)
     {
         if (osSemaphoreAcquire(IRSemHandle, osWaitForever) != osOK) continue;
 
-        IRRemoteEntry entry = remote.retrieve();
+        const IRRemoteEntry entry = remote.retrieve();
         if (entry.is_valid)
         {
-            SensorRequest<IRRemoteEntry> req = {IR_SIGNAL, entry};
+            const SensorRequest<IRRemoteEntry> req = {IR_SIGNAL, entry};
             rtos_queue_send(req, sensorQueueHandle);
             is_cmd_sent = true;
             osDelay(SIGNAL_DELAY_US);
@@ -45,7 +45,8 @@ void IR_read_task(void* argument)
             is_cmd_sent = false;
         }
 
-        HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+        HAL_NVIC_EnableIRQ(
+            EXTI15_10_IRQn);  // allow EXTI15_10 interrupt to occur on rising edge again
         // osDelay(1); (not needed because it's event-driven)
     }
 
@@ -61,9 +62,9 @@ void HCSR04_read_task(void* argument)
         if (distance <= -1) continue;
 
         if (distance <= DISTANCE_ALERT_THRESHOLD ||
-            (is_warning && distance > DISTANCE_ALERT_THRESHOLD))
+            ((is_warning && distance > DISTANCE_ALERT_THRESHOLD)))
         {
-            SensorRequest<int16_t> req = {DISTANCE_ALERT, distance};
+            const SensorRequest<int16_t> req = {DISTANCE_ALERT, distance};
             rtos_queue_send(req, sensorQueueHandle);
         }
 
@@ -85,9 +86,9 @@ void controller_task(void* argument)
         {
             case IR_SIGNAL:
             {
-                SensorRequest<IRRemoteEntry>* parsed =
-                    reinterpret_cast<SensorRequest<IRRemoteEntry>*>(req);
-                IRRemoteEntry& entry = parsed->content;
+                const SensorRequest<IRRemoteEntry>* parsed =
+                    reinterpret_cast<const SensorRequest<IRRemoteEntry>*>(req);
+                const IRRemoteEntry& entry = parsed->content;
 
                 if (!entry.is_valid) continue;
 
@@ -100,8 +101,9 @@ void controller_task(void* argument)
             break;
             case DISTANCE_ALERT:
             {
-                SensorRequest<int16_t>* parsed   = reinterpret_cast<SensorRequest<int16_t>*>(req);
-                int16_t&                distance = parsed->content;
+                const SensorRequest<int16_t>* parsed =
+                    reinterpret_cast<SensorRequest<int16_t>*>(req);
+                int16_t distance = parsed->content;
 
                 if (distance <= DISTANCE_ALERT_THRESHOLD)
                 {

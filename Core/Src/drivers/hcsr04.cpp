@@ -17,6 +17,7 @@ int16_t HCSR04::retrieve()
         osMutexRelease(HTIM3MutexHandle);
         return -1;
     }
+
     m_htim.reset();
 
     if (!m_htim.delay_until(m_echo, LOW, 24000))

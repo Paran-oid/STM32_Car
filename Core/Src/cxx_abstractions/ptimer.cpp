@@ -10,7 +10,7 @@ const TIM_TypeDef* ABP2_TIMS[] = {TIM1, TIM8};
 template <typename T>
 uint32_t PTimer<T>::freq_get() const
 {
-    uint32_t pclk;
+    uint32_t pclk;  // peripheral clock
 
     for (const auto& tim : ABP2_TIMS)
     {
@@ -66,10 +66,7 @@ bool PTimer<T>::delay_until(GPIO& gpio, GPIOState expected_state, T timeout_us)
 
     while (gpio.state_get() != expected_state)
     {
-        if (this->elapsed_us() >= timeout_us)
-        {
-            return false;
-        }
+        if (this->elapsed_us() >= timeout_us) return false;
     }
 
     return true;
@@ -79,11 +76,6 @@ template <typename T>
 bool PTimer<T>::pwm_start(uint8_t channel)
 {
     return HAL_TIM_PWM_Start(&m_htim, channel) == HAL_OK;
-}
-
-template <typename T>
-void PTimer<T>::pwm_set(uint16_t val, uint8_t channel)
-{
 }
 
 template <typename T>

@@ -65,7 +65,8 @@ class DriveSystem
      * Private Methods
      ***********************************************************/
     void pins_set(bool in1, bool in2, bool in3, bool in4);
-    void move(const CarDirection& direction);
+    void move(CarDirection direction);
+    void speed_handle(IRRemoteCode code);
 
    public:
     /***********************************************************
@@ -88,5 +89,5 @@ class DriveSystem
     /***********************************************************
      * Public Methods
      ***********************************************************/
-    void execute(const IRRemoteCode& code);
+    void execute(IRRemoteCode code);
 };

@@ -67,6 +67,29 @@ void DriveSystem::move(CarDirection direction)
     }
 }
 
+void DriveSystem::speed_handle(IRRemoteCode code)
+{
+    uint16_t cmp_val = m_htim_pwm->pwm_get(TIM_CHANNEL_1);
+
+    const bool can_increase = cmp_val < PWM_SPEED_MAX;
+    const bool can_decrease = cmp_val > PWM_SPEED_MIN;
+
+    if (!can_increase && !can_decrease) return;
+
+    if (can_increase && code == IR_REMOTE_VOL_UP)
+    {
+        cmp_val += PWM_SPEED_STEP;
+    }
+    else if (can_decrease && code == IR_REMOTE_VOL_DOWN)
+    {
+        cmp_val -= PWM_SPEED_STEP;
+    }
+
+    m_htim_pwm->pwm_set(cmp_val, TIM_CHANNEL_1);
+    buzzer.state_set(HIGH);
+    osTimerStart(BuzzerToggleTimerHandle, 200);
+}
+
 void DriveSystem::execute(IRRemoteCode code)
 {
     static CarDirection direction = CAR_STATIONARY;
@@ -112,27 +135,7 @@ void DriveSystem::execute(IRRemoteCode code)
         case IR_REMOTE_VOL_UP:
         case IR_REMOTE_VOL_DOWN:
             if (!m_htim_pwm) break;
-            {
-                uint16_t cmp_val = m_htim_pwm->pwm_get(TIM_CHANNEL_1);
-
-                const bool can_increase = cmp_val < PWM_SPEED_MAX;
-                const bool can_decrease = cmp_val > PWM_SPEED_MIN;
-
-                if (!can_increase && !can_decrease) break;
-
-                if (can_increase && code == IR_REMOTE_VOL_UP)
-                {
-                    cmp_val += PWM_SPEED_STEP;
-                }
-                else if (can_decrease && code == IR_REMOTE_VOL_DOWN)
-                {
-                    cmp_val -= PWM_SPEED_STEP;
-                }
-                
-                m_htim_pwm->pwm_set(cmp_val, TIM_CHANNEL_1);
-                buzzer.state_set(HIGH);
-                osTimerStart(BuzzerToggleTimerHandle, 200);
-            }
+            this->speed_handle(code);
             break;
 
         case IR_REMOTE_MUTE:

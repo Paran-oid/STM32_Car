@@ -10,10 +10,6 @@ extern "C"
 /***********************************************************
  * Public defines
  ***********************************************************/
-#define IR_REPEAT_CHECK(entry)                                               \
-    ((entry.data) == (entry.data_bar) && (entry.data_bar) == (entry.addr) && \
-     (entry.addr) == (entry.addr_bar) && (entry.addr_bar) == 0xFF)
-
 constexpr uint8_t SIGNAL_DELAY_US = 200;
 
 /***********************************************************
@@ -21,11 +17,11 @@ constexpr uint8_t SIGNAL_DELAY_US = 200;
  ***********************************************************/
 struct IRRemoteEntry
 {
-    uint16_t addr;
-    uint16_t addr_bar;
+    uint8_t addr;
+    uint8_t addr_bar;
 
-    uint16_t data;
-    uint16_t data_bar;
+    uint8_t data;
+    uint8_t data_bar;
 
     bool is_valid;
 };
@@ -33,7 +29,7 @@ struct IRRemoteEntry
 /***********************************************************
  * Public GPIO enums for IRREMOTE buttons
  ***********************************************************/
-enum IRRemoteCode
+enum IRRemoteCode : uint8_t
 {
     IR_REMOTE_OFF           = 0x45,
     IR_REMOTE_MODE          = 0x46,
@@ -94,10 +90,10 @@ class IRRemote
      * Public Methods
      ***********************************************************/
     IRRemoteEntry retrieve();
-    bool          refresh();
 };
 
-bool IR_repeat_check(const IRRemoteEntry& entry)
+inline bool IR_repeat_check(const IRRemoteEntry& entry)
 {
-    
+    return ((entry.data) == (entry.data_bar) && (entry.data_bar) == (entry.addr) &&
+            (entry.addr) == (entry.addr_bar) && (entry.addr_bar) == 0xFF);
 }

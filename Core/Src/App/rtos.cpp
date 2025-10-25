@@ -9,10 +9,7 @@ volatile bool is_warning  = false;
 
 void stop_motor_callback(void* argument)
 {
-    if (!is_cmd_sent)
-    {
-        drive_sys.execute(IR_REMOTE_MUTE);
-    }
+    if (!is_cmd_sent) drive_sys.execute(IR_REMOTE_MUTE);
 }
 
 void buzzer_toggle_callback(void* argument)

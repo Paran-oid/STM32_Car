@@ -7,7 +7,6 @@
  * TODO LIST:
  *
  * ! Fifth part:
- * * - Clean code and optimize it significantly
  * * - Add bluetooth
  * * - Add self drive mode (black lines detector)
  *
