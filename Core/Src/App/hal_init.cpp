@@ -1,6 +1,7 @@
 #include "hal_init.hpp"
 
 #include "drive_sys.hpp"
+#include "error_handler.hpp"
 #include "gpio.hpp"
 #include "hcsr04.hpp"
 #include "irremote.hpp"
@@ -22,10 +23,11 @@ GPIO   hcsr04_trig = {HCSR04_TRIG_GPIO_Port, HCSR04_TRIG_Pin};
 GPIO   hcsr04_echo = {HCSR04_ECHO_GPIO_Port, HCSR04_ECHO_Pin};
 HCSR04 hcsr04      = {hcsr04_trig, hcsr04_echo, tim2};
 
-GPIO buzzer = {BUZZER_GPIO_Port, BUZZER_Pin};
+GPIO buzzer   = {BUZZER_GPIO_Port, BUZZER_Pin};
+GPIO debug_ld = {DEBUG_LD_GPIO_Port, DEBUG_LD_Pin};
 
 void hal_init_all()
 {
-    tim2.start();
-    tim3.pwm_start(TIM_CHANNEL_1);
+    if (!tim2.start()) error_handle(critical_error);
+    if (!tim3.pwm_start(TIM_CHANNEL_1)) error_handle(critical_error);
 }

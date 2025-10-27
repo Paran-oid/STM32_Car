@@ -70,6 +70,8 @@ void Error_Handler(void);
 #define LD2_GPIO_Port GPIOA
 #define BUZZER_Pin GPIO_PIN_4
 #define BUZZER_GPIO_Port GPIOC
+#define DEBUG_LD_Pin GPIO_PIN_2
+#define DEBUG_LD_GPIO_Port GPIOB
 #define MOTOR1_1_Pin GPIO_PIN_11
 #define MOTOR1_1_GPIO_Port GPIOB
 #define MOTOR1_2_Pin GPIO_PIN_12
@@ -93,8 +95,6 @@ void Error_Handler(void);
 #define SWO_GPIO_Port GPIOB
 #define MOTOR_SPEED_Pin GPIO_PIN_4
 #define MOTOR_SPEED_GPIO_Port GPIOB
-#define MOTOR1_SPEED_Pin GPIO_PIN_5
-#define MOTOR1_SPEED_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

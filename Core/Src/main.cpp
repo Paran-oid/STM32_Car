@@ -1,4 +1,5 @@
 
+#include "gpio.hpp"
 #include "hal_init.hpp"
 #include "rtos.hpp"
 #include "tasks.hpp"
@@ -6,20 +7,23 @@
 /**
  * TODO LIST:
  *
- * ! Before last part:
- * * - Add photoresistor (read using ADC)
- * * - if it's too dark light lighting leds (infront of car)
  *
  * ! Last part:
+ * * - include a namespace
  * * - Introduce error handling (along with error codes)
  * * - Enhance documentation and verify that every module is explained throughthly
  * * - Once again optimize and clean the project (verify that power is used efficently too)
  * * - Use RAII to stop peripherals when needed
+ * * - add more delay options for ptimer (in ms)
  * * - Disable USART and other peripherals not in use
  * * - Write with the use of AI a good README.md and add a video of the project
  * * - Switch from debug to release
  *
- * 
+ * § possible features in future :
+ * * - Introduce bluetooth
+ * * - Introduce WIFI
+ * * - Control car through one of them
+ * * - Create a logger
  *
  * ?--> Once done we will start to work on other tasks (dive deeper in bluetooth)
  */

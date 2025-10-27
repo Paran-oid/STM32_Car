@@ -12,3 +12,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t gpio_pin)
         osSemaphoreRelease(IRSemHandle);
     }
 }
+
+// TODO: read value of photoresistor using ADC
+/*
+ * if less than threshold light LEDS up
+ * else close them (if they are lighten up)
+ */

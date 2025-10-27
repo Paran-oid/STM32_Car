@@ -71,6 +71,7 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     Core/Src/main.cpp
+    Core/Src/error_handler.cpp
 
     Core/Src/App/rtos.cpp
     Core/Src/App/hal_init.cpp
@@ -85,6 +86,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 
     Core/Src/cxx_abstractions/gpio.cpp
     Core/Src/cxx_abstractions/ptimer.cpp
+    Core/Src/cxx_abstractions/iwdg.cpp
 )
 
 # Add include paths

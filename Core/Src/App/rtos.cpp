@@ -1,6 +1,7 @@
 #include "rtos.hpp"
 
 #include "drive_sys.hpp"
+#include "error_handler.hpp"
 #include "hal_init.hpp"
 #include "irremote.hpp"
 
@@ -20,4 +21,5 @@ void buzzer_toggle_callback(void* argument)
 void rtos_init_all()
 {
     MemPoolHandle = osMemoryPoolNew(10, sizeof(IRRemoteEntry), &MemPool_attributes);
+    if (!MemPoolHandle) error_handle(critical_error);
 }

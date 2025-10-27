@@ -7,13 +7,12 @@ extern "C"
 }
 
 #include "drive_sys.hpp"
+#include "error_handler.hpp"
 #include "hal_init.hpp"
 #include "hcsr04.hpp"
 #include "irremote.hpp"
 #include "rtos.hpp"
 
-// TODO: include more interrupts in the program
-// TODO: consider including DMA for some things
 void main_task(void* argument)
 {
     /* USER CODE BEGIN 5 */
