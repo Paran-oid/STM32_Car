@@ -5,8 +5,9 @@ extern "C"
 #include "cmsis_os2.h"
 }
 
-#include <stdio.h>
 #include <string.h>
+
+#include "error_handler.hpp"
 /***************************************************************
  * Public defines
  ***************************************************************/
@@ -61,7 +62,6 @@ struct SensorRequest
 /***************************************************************
  * Function declarations
  ***************************************************************/
-
 extern "C"
 {
     void stop_motor_callback(void* argument);
@@ -74,11 +74,8 @@ template <typename T>
 bool rtos_queue_send(const T& data, osMessageQueueId_t queue)
 {
     T* item = (T*) osMemoryPoolAlloc(MemPoolHandle, osWaitForever);
-    if (!item)
-    {
-        printf("couldn't allocate item in memory pool to be sent to the queue...");
-        while (1);
-    }
+    if (!item) error_handle(critical_error);
+
     memcpy(item, &data, sizeof(data));
     return osMessageQueuePut(sensorQueueHandle, &item, 0, osWaitForever) == osOK;
 }

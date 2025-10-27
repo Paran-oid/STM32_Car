@@ -6,6 +6,7 @@ extern "C"
 #include "main.h"
 }
 
+#include "_iwdg.hpp"
 #include "drive_sys.hpp"
 #include "error_handler.hpp"
 #include "hal_init.hpp"
@@ -18,8 +19,8 @@ void main_task(void* argument)
     /* USER CODE BEGIN 5 */
     while (1)
     {
-        HAL_IWDG_Refresh(&hiwdg);  // reset watch dog timer of 4 seconds
-        osDelay(1000);
+        if (!iwdg.refresh()) error_handle(critical_error);
+        osDelay(IWDG_DELAY);
     }
     osThreadTerminate(NULL);
     /* USER CODE END 5 */
@@ -35,7 +36,7 @@ void IR_read_task(void* argument)
         if (entry.is_valid)
         {
             const SensorRequest<IRRemoteEntry> req = {IR_SIGNAL, entry};
-            rtos_queue_send(req, sensorQueueHandle);
+            if (!rtos_queue_send(req, sensorQueueHandle)) error_handle(critical_error);
             is_cmd_sent = true;
             osDelay(SIGNAL_DELAY_US);
         }
@@ -64,10 +65,10 @@ void HCSR04_read_task(void* argument)
             ((is_warning && distance > DISTANCE_ALERT_THRESHOLD)))
         {
             const SensorRequest<int16_t> req = {DISTANCE_ALERT, distance};
-            rtos_queue_send(req, sensorQueueHandle);
+            if (!rtos_queue_send(req, sensorQueueHandle)) error_handle(critical_error);
         }
 
-        osDelay(100);
+        osDelay(HCSR04_DELAY);
     }
 
     osThreadTerminate(NULL);

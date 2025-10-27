@@ -11,6 +11,7 @@ extern "C"
 /***********************************************************
  * Public defines
  ***********************************************************/
+constexpr uint16_t HCSR04_DELAY     = 100;
 constexpr uint16_t HCSR04_MIN_RANGE = 2;
 constexpr uint16_t HCSR04_MAX_RANGE = 400;
 

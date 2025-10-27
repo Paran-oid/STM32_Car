@@ -1,5 +1,6 @@
 #include "hal_init.hpp"
 
+#include "_iwdg.hpp"
 #include "drive_sys.hpp"
 #include "error_handler.hpp"
 #include "gpio.hpp"
@@ -10,6 +11,7 @@
 
 PTimer<uint32_t> tim2 {htim2};
 PTimer<uint16_t> tim3 {htim3};
+_IWDG            iwdg {hiwdg};
 
 GPIO     IRControl_gpio = {IRControl_GPIO_Port, IRControl_Pin};
 IRRemote remote         = {IRControl_gpio, tim2};

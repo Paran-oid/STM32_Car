@@ -6,20 +6,12 @@
 
 /**
  * TODO LIST:
- *
- *
  * ! Last part:
- * * - include a namespace
- * * - Introduce error handling (along with error codes)
  * * - Enhance documentation and verify that every module is explained throughthly
- * * - Once again optimize and clean the project (verify that power is used efficently too)
- * * - Use RAII to stop peripherals when needed
- * * - add more delay options for ptimer (in ms)
- * * - Disable USART and other peripherals not in use
  * * - Write with the use of AI a good README.md and add a video of the project
- * * - Switch from debug to release
+ * * - Finish with the project :)
  *
- * § possible features in future :
+ * § features to implement in the future :
  * * - Introduce bluetooth
  * * - Introduce WIFI
  * * - Control car through one of them

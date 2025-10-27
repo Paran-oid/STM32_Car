@@ -21,6 +21,9 @@
 		"array": "cpp",
 		"string_view": "cpp",
 		"ranges": "cpp",
-		"span": "cpp"
+		"span": "cpp",
+		"limits": "cpp",
+		"random": "cpp",
+		"semaphore": "cpp"
 	}
 }

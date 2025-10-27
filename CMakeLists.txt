@@ -14,6 +14,7 @@ set(CMAKE_C_EXTENSIONS ON)
 
 
 # Define the build type
+set(CMAKE_BUILD_TYPE "Release")
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
 endif()
@@ -86,7 +87,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 
     Core/Src/cxx_abstractions/gpio.cpp
     Core/Src/cxx_abstractions/ptimer.cpp
-    Core/Src/cxx_abstractions/iwdg.cpp
+    Core/Src/cxx_abstractions/_iwdg.cpp
 )
 
 # Add include paths

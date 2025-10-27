@@ -8,7 +8,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t gpio_pin)
 {
     if (gpio_pin == GPIO_PIN_10)
     {
-        HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);
+        HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);  // disables interrupts for EXTI15_10
         osSemaphoreRelease(IRSemHandle);
     }
 }

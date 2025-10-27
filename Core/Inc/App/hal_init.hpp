@@ -5,6 +5,11 @@ extern "C"
 #include "main.h"
 }
 
+/***********************************************************
+ * Public defines
+ ***********************************************************/
+constexpr uint16_t IWDG_DELAY = 1000;  // in ms
+
 /***************************************************************
  * Forward declarations
  ***************************************************************/
@@ -16,7 +21,7 @@ class PTimer;
 class GPIO;
 class IRRemote;
 class HCSR04;
-class IWDG;
+class _IWDG;
 
 /***************************************************************
  * HAL generated variables in main.c
@@ -30,7 +35,9 @@ extern IWDG_HandleTypeDef hiwdg;
  * Exported objects
  ***************************************************************/
 extern PTimer<uint32_t> tim2;  // used for precise delays
-extern IWDG
+extern PTimer<uint16_t> tim3;  // used for handling motor speed
+
+extern _IWDG iwdg;
 
 extern GPIO     IRcontrol;
 extern IRRemote remote;
