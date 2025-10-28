@@ -4,22 +4,6 @@
 #include "rtos.hpp"
 #include "tasks.hpp"
 
-/**
- * TODO LIST:
- * ! Last part:
- * * - Enhance documentation and verify that every module is explained throughthly
- * * - Write with the use of AI a good README.md and add a video of the project
- * * - Finish with the project :)
- *
- * § features to implement in the future :
- * * - Introduce bluetooth
- * * - Introduce WIFI
- * * - Control car through one of them
- * * - Create a logger
- *
- * ?--> Once done we will start to work on other tasks (dive deeper in bluetooth)
- */
-
 void setup()
 {
     hal_init_all();

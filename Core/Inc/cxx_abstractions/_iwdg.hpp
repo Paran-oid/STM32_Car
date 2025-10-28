@@ -6,14 +6,20 @@ extern "C"
 }
 
 /***************************************************************
- * _IWDG class for managing IWDG
+ * _IWDG class for managing independent watchdog timer
  ****************************************************************/
 class _IWDG
 {
    private:
+    /***********************************************************
+     * Private Members
+     ***********************************************************/
     IWDG_HandleTypeDef& m_hiwdg;
 
    public:
+    /***********************************************************
+     * Constructors / Destructor
+     ***********************************************************/
     _IWDG() = delete;
     _IWDG(IWDG_HandleTypeDef& hiwdg) : m_hiwdg {hiwdg}
     {
@@ -21,5 +27,8 @@ class _IWDG
 
     ~_IWDG() = default;
 
+    /***********************************************************
+     * Public Methods
+     ***********************************************************/
     bool refresh();
 };

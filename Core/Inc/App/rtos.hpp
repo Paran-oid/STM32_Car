@@ -8,6 +8,7 @@ extern "C"
 #include <string.h>
 
 #include "error_handler.hpp"
+
 /***************************************************************
  * Public defines
  ***************************************************************/
@@ -70,6 +71,9 @@ extern "C"
 
 void rtos_init_all();
 
+/***************************************************************
+ * Function implementations (and declarations)
+ ***************************************************************/
 template <typename T>
 bool rtos_queue_send(const T& data, osMessageQueueId_t queue)
 {

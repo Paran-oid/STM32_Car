@@ -92,6 +92,9 @@ class IRRemote
     IRRemoteEntry retrieve();
 };
 
+/***************************************************************
+ * Function implementations (and declarations)
+ ***************************************************************/
 inline bool IR_repeat_check(const IRRemoteEntry& entry)
 {
     return ((entry.data) == (entry.data_bar) && (entry.data_bar) == (entry.addr) &&

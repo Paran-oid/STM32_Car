@@ -129,13 +129,17 @@ void DriveSystem::execute(IRRemoteCode code)
             break;
 
         case IR_REMOTE_REPEAT_CODE:
-            // just use same direction used previously (no code written on purpose)
+            // the same direction will be used just as previously (no code written on purpose)
             break;
 
         case IR_REMOTE_VOL_UP:
         case IR_REMOTE_VOL_DOWN:
             if (!m_htim_pwm) break;
             this->speed_handle(code);
+            break;
+
+        case IR_REMOTE_OFF:
+            NVIC_SystemReset();
             break;
 
         case IR_REMOTE_MUTE:
