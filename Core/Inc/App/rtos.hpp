@@ -12,7 +12,7 @@ extern "C"
 /***************************************************************
  * Public defines
  ***************************************************************/
-constexpr uint8_t buzzer_toggle_callback_DELAY = 100;
+constexpr uint8_t BUZZER_TOGGLE_CALLBACK_DELAY = 100;
 
 /***************************************************************
  * HAL generated variables in main.c

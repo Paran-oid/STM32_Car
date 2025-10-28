@@ -18,7 +18,6 @@ void loop()
 extern "C"
 {
     // Mapping main.c to main.cpp functions/tasks
-
     void main_setup(void)
     {
         setup();

@@ -80,9 +80,9 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/App/interrupts.cpp
 
 
-    Core/Src/drivers/irremote.cpp
-    Core/Src/drivers/drive_sys.cpp
-    Core/Src/drivers/hcsr04.cpp
+    Core/Src/Drivers/irremote.cpp
+    Core/Src/Drivers/drive_sys.cpp
+    Core/Src/Drivers/hcsr04.cpp
 
 
     Core/Src/cxx_abstractions/gpio.cpp
@@ -93,7 +93,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
-    Core/Inc/drivers
+    Core/Inc/Drivers
     Core/Inc/cxx_abstractions
     Core/Inc/App
 )

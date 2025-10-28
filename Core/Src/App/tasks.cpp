@@ -17,6 +17,13 @@ extern "C"
 void main_task(void* argument)
 {
     /* USER CODE BEGIN 5 */
+    for (uint8_t i = 0; i < BUZZER_START_SIGNAL_AMOUNT; i++)
+    {
+        buzzer.state_set(HIGH);
+        osDelay(BUZZER_START_SIGNAL_DELAY);
+        buzzer.state_set(LOW);
+        osDelay(BUZZER_START_SIGNAL_DELAY);
+    }
     while (1)
     {
         if (!iwdg.refresh()) error_handle(critical_error);
@@ -110,7 +117,7 @@ void controller_task(void* argument)
                     if (!is_warning) is_warning = true;
 
                     if (!osTimerIsRunning(BuzzerToggleTimerHandle))
-                        osTimerStart(BuzzerToggleTimerHandle, buzzer_toggle_callback_DELAY);
+                        osTimerStart(BuzzerToggleTimerHandle, BUZZER_TOGGLE_CALLBACK_DELAY);
                 }
                 else if (is_warning && distance > DISTANCE_ALERT_THRESHOLD)
                 {
