@@ -1,6 +1,11 @@
 # STM32 Car
 
-A compact, modular, and extensible embedded project for building a small robotic car using an STM32 microcontroller. This repository contains firmware, hardware notes, wiring guidance, and build/flash instructions to get the vehicle driving, sensing, and responding to commands.
+A compact, modular, and extensible embedded project for building a small robotic car using an STM32 microcontroller. This repository contains firmware, h
+
+ardware notes, wiring guidance, and build/flash instructions to get the vehicle driving, sensing, and responding to commands.
+
+https://github.com/user-attachments/assets/7eb9cc81-aa76-42e0-a95a-5bcbff496e82
+
 ---
 
 ## Table of contents
@@ -176,3 +181,4 @@ Contributions are welcome. Please:
 This repository is released under the MIT License. See LICENSE file for details. (If you prefer a different license, replace it and update the license header.)
 
 ---
+
