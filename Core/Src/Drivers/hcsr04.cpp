@@ -8,11 +8,11 @@ int16_t HCSR04::retrieve()
 
     if (osMutexAcquire(HTIM3MutexHandle, osWaitForever) != osOK) return -1;
 
-    this->m_trig.state_set(HIGH);
+    this->m_trig.set_state(sca::HIGH);
     m_htim.delay_us(10);
-    this->m_trig.state_set(LOW);
+    this->m_trig.set_state(sca::LOW);
 
-    if (!m_htim.delay_until(m_echo, HIGH, 3000))
+    if (!m_htim.delay_until(m_echo, sca::HIGH, 3000))
     {
         osMutexRelease(HTIM3MutexHandle);
         return -1;
@@ -20,7 +20,7 @@ int16_t HCSR04::retrieve()
 
     m_htim.reset();
 
-    if (!m_htim.delay_until(m_echo, LOW, 24000))
+    if (!m_htim.delay_until(m_echo, sca::LOW, 24000))
     {
         osMutexRelease(HTIM3MutexHandle);
         return -1;

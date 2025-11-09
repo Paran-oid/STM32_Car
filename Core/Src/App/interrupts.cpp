@@ -4,7 +4,7 @@
 #include "irremote.hpp"
 #include "rtos.hpp"
 
-void HAL_GPIO_EXTI_Callback(uint16_t gpio_pin)
+void HAL_gpio_EXTI_Callback(uint16_t gpio_pin)
 {
     if (gpio_pin == GPIO_PIN_10)
     {

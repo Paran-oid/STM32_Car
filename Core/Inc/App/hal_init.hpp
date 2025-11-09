@@ -15,13 +15,18 @@ constexpr uint16_t IWDG_DELAY = 1000;  // in ms
  ***************************************************************/
 class DriveSystem;
 
+namespace sca
+{
 template <typename T>
-class PTimer;
+class ptimer;
 
-class GPIO;
+class gpio;
+class iwdg;
+
+}  // namespace sca
+
 class IRRemote;
 class HCSR04;
-class _IWDG;
 
 /***************************************************************
  * HAL generated variables in main.c
@@ -34,22 +39,22 @@ extern IWDG_HandleTypeDef hiwdg;
 /***************************************************************
  * Exported objects
  ***************************************************************/
-extern PTimer<uint32_t> tim2;  // used for precise delays
-extern PTimer<uint16_t> tim3;  // used for handling motor speed
+extern sca::ptimer<uint32_t> tim2;  // used for precise delays
+extern sca::ptimer<uint16_t> tim3;  // used for handling motor speed
 
-extern _IWDG iwdg;
+extern sca::iwdg iwdg;
 
-extern GPIO     IRcontrol;
-extern IRRemote remote;
+extern sca::gpio IRcontrol;
+extern IRRemote  remote;
 
-extern GPIO        motor1[2], motor2[2];
+extern sca::gpio   motor1[2], motor2[2];
 extern DriveSystem drive_sys;
 
-extern GPIO   hcsr04_trig, hcsr04_echo;
-extern HCSR04 hcsr04;
+extern sca::gpio hcsr04_trig, hcsr04_echo;
+extern HCSR04    hcsr04;
 
-extern GPIO buzzer;
-extern GPIO debug_ld;
+extern sca::gpio buzzer;
+extern sca::gpio debug_ld;
 
 /***************************************************************
  * Function declarations

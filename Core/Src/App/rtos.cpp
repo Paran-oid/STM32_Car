@@ -15,7 +15,7 @@ void stop_motor_callback(void* argument)
 
 void buzzer_toggle_callback(void* argument)
 {
-    buzzer.state_toggle();
+    buzzer.toggle_state();
 }
 
 void rtos_init_all()

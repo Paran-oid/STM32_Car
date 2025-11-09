@@ -26,7 +26,7 @@ constexpr uint16_t PWM_SPEED_MIN  = 499;
 constexpr uint16_t BUZZER_SIGNAL = 200;
 
 /***********************************************************
- * Public GPIO enums for specifying directions
+ * Public gpio enums for specifying directions
  ***********************************************************/
 enum CarDirection : uint8_t
 {
@@ -56,10 +56,10 @@ class DriveSystem
      ***********************************************************/
     // motor1(left): in1 and in2
     // motor2(right): in3 and in4
-    GPIO &m_gpio_in1, &m_gpio_in2, &m_gpio_in3, &m_gpio_in4;
+    sca::gpio &m_gpio_in1, &m_gpio_in2, &m_gpio_in3, &m_gpio_in4;
 
-    osTimerId_t&      m_ostim_motor;
-    PTimer<uint16_t>* m_htim_pwm;
+    osTimerId_t&           m_ostim_motor;
+    sca::ptimer<uint16_t>* m_htim_pwm;
 
     /***********************************************************
      * Private Methods
@@ -73,8 +73,8 @@ class DriveSystem
      * Constructors / Destructor
      ***********************************************************/
     DriveSystem() = delete;
-    DriveSystem(GPIO& in1, GPIO& in2, GPIO& in3, GPIO& in4, osTimerId_t& ostim_motor,
-                PTimer<uint16_t>* htim_pwm = nullptr)
+    DriveSystem(sca::gpio& in1, sca::gpio& in2, sca::gpio& in3, sca::gpio& in4,
+                osTimerId_t& ostim_motor, sca::ptimer<uint16_t>* htim_pwm = nullptr)
         : m_gpio_in1 {in1},
           m_gpio_in2 {in2},
           m_gpio_in3 {in3},

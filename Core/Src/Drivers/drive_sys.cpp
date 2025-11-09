@@ -10,10 +10,10 @@ extern "C"
 
 void DriveSystem::pins_set(bool in1, bool in2, bool in3, bool in4)
 {
-    m_gpio_in1.state_set(in1 ? HIGH : LOW);
-    m_gpio_in2.state_set(in2 ? HIGH : LOW);
-    m_gpio_in3.state_set(in3 ? HIGH : LOW);
-    m_gpio_in4.state_set(in4 ? HIGH : LOW);
+    m_gpio_in1.set_state(in1 ? sca::HIGH : sca::LOW);
+    m_gpio_in2.set_state(in2 ? sca::HIGH : sca::LOW);
+    m_gpio_in3.set_state(in3 ? sca::HIGH : sca::LOW);
+    m_gpio_in4.set_state(in4 ? sca::HIGH : sca::LOW);
 }
 
 void DriveSystem::move(CarDirection direction)
@@ -69,7 +69,7 @@ void DriveSystem::move(CarDirection direction)
 
 void DriveSystem::speed_handle(IRRemoteCode code)
 {
-    uint16_t cmp_val = m_htim_pwm->pwm_get(TIM_CHANNEL_1);
+    uint16_t cmp_val = m_htim_pwm->get_pwm(TIM_CHANNEL_1);
 
     const bool can_increase = cmp_val < PWM_SPEED_MAX;
     const bool can_decrease = cmp_val > PWM_SPEED_MIN;
@@ -85,8 +85,8 @@ void DriveSystem::speed_handle(IRRemoteCode code)
         cmp_val -= PWM_SPEED_STEP;
     }
 
-    m_htim_pwm->pwm_set(cmp_val, TIM_CHANNEL_1);
-    buzzer.state_set(HIGH);
+    m_htim_pwm->set_pwm(cmp_val, TIM_CHANNEL_1);
+    buzzer.set_state(sca::HIGH);
     osTimerStart(BuzzerToggleTimerHandle, 200);
 }
 

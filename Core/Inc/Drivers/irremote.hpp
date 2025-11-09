@@ -27,7 +27,7 @@ struct IRRemoteEntry
 };
 
 /***********************************************************
- * Public GPIO enums for IRREMOTE buttons
+ * Public gpio enums for IRREMOTE buttons
  ***********************************************************/
 enum IRRemoteCode : uint8_t
 {
@@ -68,8 +68,8 @@ class IRRemote
     /***********************************************************
      * Private Members
      ***********************************************************/
-    GPIO&             m_gpio;
-    PTimer<uint32_t>& m_htim;
+    sca::gpio&             m_gpio;
+    sca::ptimer<uint32_t>& m_htim;
 
     /***********************************************************
      * Private Methods
@@ -81,7 +81,7 @@ class IRRemote
      * Constructors / Destructor
      ***********************************************************/
     IRRemote() = delete;
-    IRRemote(GPIO& gpio, PTimer<uint32_t>& htim) : m_gpio {gpio}, m_htim {htim}
+    IRRemote(sca::gpio& gpio, sca::ptimer<uint32_t>& htim) : m_gpio {gpio}, m_htim {htim}
     {
     }
     ~IRRemote() = default;

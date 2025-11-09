@@ -24,15 +24,15 @@ class HCSR04
     /***********************************************************
      * Private Members
      ***********************************************************/
-    GPIO &            m_echo, &m_trig;
-    PTimer<uint32_t>& m_htim;
+    sca::gpio &            m_echo, &m_trig;
+    sca::ptimer<uint32_t>& m_htim;
 
    public:
     /***********************************************************
      * Constructors / Destructor
      ***********************************************************/
     HCSR04() = delete;
-    HCSR04(GPIO& trig, GPIO& echo, PTimer<uint32_t>& htim)
+    HCSR04(sca::gpio& trig, sca::gpio& echo, sca::ptimer<uint32_t>& htim)
         : m_echo {echo}, m_trig {trig}, m_htim {htim}
     {
     }

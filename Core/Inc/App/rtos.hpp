@@ -42,7 +42,7 @@ volatile extern bool is_cmd_sent;
 volatile extern bool is_warning;
 
 /***********************************************************
- * Public GPIO enums for specifying instruction type
+ * Public gpio enums for specifying instruction type
  ***********************************************************/
 enum SensorRequestCode : uint8_t
 {

@@ -1,11 +1,23 @@
 CompileFlags:
-  Add:
-    - '-ferror-limit=0'
-    - '-Wno-implicit-int'
-  CompilationDatabase: build/Debug
+    Add:
+        - "-ferror-limit=0"
+        - "-Wno-implicit-int"
+        - >-
+            -I/opt/st/stm32cubeclt_1.19.0/GNU-tools-for-STM32/lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/c++/13.3.1
+        - >-
+            -I/opt/st/stm32cubeclt_1.19.0/GNU-tools-for-STM32/lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/c++/13.3.1/arm-none-eabi
+        - >-
+            -I/opt/st/stm32cubeclt_1.19.0/GNU-tools-for-STM32/lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/c++/13.3.1/backward
+        - >-
+            -I/opt/st/stm32cubeclt_1.19.0/GNU-tools-for-STM32/lib/gcc/arm-none-eabi/13.3.1/include
+        - >-
+            -I/opt/st/stm32cubeclt_1.19.0/GNU-tools-for-STM32/lib/gcc/arm-none-eabi/13.3.1/include-fixed
+        - >-
+            -I/opt/st/stm32cubeclt_1.19.0/GNU-tools-for-STM32/lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include
+    CompilationDatabase: build/Debug
 Diagnostics:
-  Suppress:
-    - unused-includes
-    - unknown_typename
-    - unknown_typename_suggest
-    - typename_requires_specqual
+    Suppress:
+        - unused-includes
+        - unknown_typename
+        - unknown_typename_suggest
+        - typename_requires_specqual

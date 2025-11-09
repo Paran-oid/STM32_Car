@@ -6,12 +6,12 @@ extern "C"
 #include "main.h"
 }
 
-#include "_iwdg.hpp"
 #include "drive_sys.hpp"
 #include "error_handler.hpp"
 #include "hal_init.hpp"
 #include "hcsr04.hpp"
 #include "irremote.hpp"
+#include "iwdg.hpp"
 #include "rtos.hpp"
 
 void main_task(void* argument)
@@ -19,14 +19,14 @@ void main_task(void* argument)
     /* USER CODE BEGIN 5 */
     for (uint8_t i = 0; i < BUZZER_START_SIGNAL_AMOUNT; i++)
     {
-        buzzer.state_set(HIGH);
+        buzzer.set_state(sca::HIGH);
         osDelay(BUZZER_START_SIGNAL_DELAY);
-        buzzer.state_set(LOW);
+        buzzer.set_state(sca::LOW);
         osDelay(BUZZER_START_SIGNAL_DELAY);
     }
     while (1)
     {
-        if (!iwdg.refresh()) error_handle(critical_error);
+        if (iwdg.refresh() != sca::OK) error_handle(critical_error);
         osDelay(IWDG_DELAY);
     }
     osThreadTerminate(NULL);
@@ -122,7 +122,7 @@ void controller_task(void* argument)
                 else if (is_warning && distance > DISTANCE_ALERT_THRESHOLD)
                 {
                     osTimerStop(BuzzerToggleTimerHandle);
-                    buzzer.state_set(LOW);
+                    buzzer.set_state(sca::LOW);
                     is_warning = false;
                 }
                 break;

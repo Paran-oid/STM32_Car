@@ -9,5 +9,5 @@ extern "C"
  ***************************************************************/
 extern "C"
 {
-    void HAL_GPIO_EXTI_Callback(uint16_t gpio_pin);
+    void HAL_gpio_EXTI_Callback(uint16_t gpio_pin);
 }
