@@ -58,7 +58,7 @@ Minimum:
 - Power source for motors (battery pack appropriate for your motors)
 - 1x Ultrasonic distance sensor (HC-SR04) or IR distance sensor (optional)
 - 1x IR Remote + 1x IR Receiver
-- Wires, protoboard and 16x mounting screws (differ in size, if details needed I would love to share it with you all!)
+- Wires, protoboard and 16x mounting screws (once I have time I will share them in detail here)
 
 ---
 
@@ -181,4 +181,5 @@ Contributions are welcome. Please:
 This repository is released under the MIT License. See LICENSE file for details. (If you prefer a different license, replace it and update the license header.)
 
 ---
+
 
