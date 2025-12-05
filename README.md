@@ -1,28 +1,9 @@
 # STM32 Car
 
-A compact, modular, and extensible embedded project for building a small robotic car using an STM32 microcontroller. This repository contains firmware, h
-
-ardware notes, wiring guidance, and build/flash instructions to get the vehicle driving, sensing, and responding to commands.
+A compact, modular, and extensible embedded project for building a small robotic car using an STM32 microcontroller. This repository contains firmware, hardware notes, 
+wiring guidance, and build/flash instructions to get the vehicle driving, sensing, and responding to commands.
 
 https://github.com/user-attachments/assets/7eb9cc81-aa76-42e0-a95a-5bcbff496e82
-
----
-
-## Table of contents
-
-- [Project overview](#project-overview)
-- [Features](#features)
-- [Hardware requirements / Bill of Materials (BoM)](#hardware-requirements--bill-of-materials-bom)
-- [Typical wiring and pinout](#typical-wiring-and-pinout)
-- [Software architecture](#software-architecture)
-- [Development environment & prerequisites](#development-environment--prerequisites)
-- [Build instructions](#build-instructions)
-- [Flashing / Programming](#flashing--programming)
-- [Runtime usage and controls](#runtime-usage-and-controls)
-- [Configuration and customization](#configuration-and-customization)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [License](#license)
 
 ---
 
@@ -64,7 +45,7 @@ Minimum:
 
 ## Typical wiring and pinout
 
-Always share grounds between motor power and MCU power. Use appropriate level shifting for UART if needed.
+Always share grounds between motor power and MCU power
 
 ---
 
@@ -82,8 +63,6 @@ The firmware uses an application loop:
 3. Update motors (PWM & direction)
 4. Repeat
 
-The code is written to be modular; to add sensing or features, add a driver and call it from the App layer.
-
 ---
 
 ## Development environment & prerequisites
@@ -99,7 +78,7 @@ OR
 
 - Alternatively:
   - arm-none-eabi-gcc toolchain
-  - Makefile (if included)
+  - CMake
   - PlatformIO (with the appropriate board/platform)
 - Flashing tools:
   - ST-LINK (STLink Utility, st-flash from OpenOCD/stlink)
@@ -109,7 +88,6 @@ OR
 Useful software:
 - Python (optional for scripts)
 - minicom / picocom / Tera Term / PuTTY (for serial console)
-- Git
 
 ---
 
@@ -131,8 +109,10 @@ Note: Replace MCU/clock configuration if your board differs. The project leaves 
 
 ## Flashing / Programming
 
+### Programming
+
 - Make sure `STM32CubeIde for Visual Studio Code` is installed in your VScode
-- Once installed you can start debugging using stlink (through VScode). 
+- Once installed you can start debugging using STLink (through VScode). 
 
 ---
 
@@ -181,5 +161,6 @@ Contributions are welcome. Please:
 This repository is released under the MIT License. See LICENSE file for details. (If you prefer a different license, replace it and update the license header.)
 
 ---
+
 
 
