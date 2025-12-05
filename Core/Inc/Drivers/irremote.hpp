@@ -24,6 +24,9 @@ struct IRRemoteEntry
     uint8_t data_bar;
 
     bool is_valid;
+
+    IRRemoteEntry(uint8_t, uint8_t, uint8_t, uint8_t, bool);
+    IRRemoteEntry(uint8_t, uint8_t, bool);
 };
 
 /***********************************************************

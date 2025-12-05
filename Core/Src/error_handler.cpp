@@ -27,7 +27,7 @@ void warning_error(void)
 {
     __disable_irq();
 
-    for (volatile uint8_t i = 0; i < 5; i++)
+    for (uint8_t i = 0; i < 5; i++)
     {
         debug_ld.set_state(sca::HIGH);
         tim2.delay_us(500000);  // 500 ms

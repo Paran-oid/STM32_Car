@@ -2,6 +2,17 @@
 
 #include "rtos.hpp"
 
+IRRemoteEntry::IRRemoteEntry(uint8_t addr, uint8_t addr_bar, uint8_t data, uint8_t data_bar, bool)
+    : addr {addr}, addr_bar {addr_bar}, data {data}, data_bar {data_bar}
+
+{
+}
+
+IRRemoteEntry::IRRemoteEntry(uint8_t addr, uint8_t data, bool is_valid)
+    : addr {addr}, data {data}, is_valid {is_valid}
+{
+}
+
 uint8_t IRRemote::read_byte()
 {
     uint8_t res = 0;

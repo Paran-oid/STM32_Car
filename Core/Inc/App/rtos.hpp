@@ -81,5 +81,5 @@ bool rtos_queue_send(const T& data, osMessageQueueId_t queue)
     if (!item) error_handle(critical_error);
 
     memcpy(item, &data, sizeof(data));
-    return osMessageQueuePut(sensorQueueHandle, &item, 0, osWaitForever) == osOK;
+    return osMessageQueuePut(queue, &item, 0, osWaitForever) == osOK;
 }

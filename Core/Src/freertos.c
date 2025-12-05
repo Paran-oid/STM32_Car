@@ -19,8 +19,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "FreeRTOS.h"
-#include "task.h"
+
 #include "main.h"
+#include "task.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -74,12 +75,14 @@ void vApplicationIdleHook(void)
 /* USER CODE BEGIN PREPOSTSLEEP */
 __weak void PreSleepProcessing(uint32_t ulExpectedIdleTime)
 {
-/* place for user code */
+    /* place for user code */
+    (void) ulExpectedIdleTime;
 }
 
 __weak void PostSleepProcessing(uint32_t ulExpectedIdleTime)
 {
-/* place for user code */
+    /* place for user code */
+    (void) ulExpectedIdleTime;
 }
 /* USER CODE END PREPOSTSLEEP */
 
@@ -87,4 +90,3 @@ __weak void PostSleepProcessing(uint32_t ulExpectedIdleTime)
 /* USER CODE BEGIN Application */
 
 /* USER CODE END Application */
-

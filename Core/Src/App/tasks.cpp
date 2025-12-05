@@ -16,7 +16,7 @@ extern "C"
 
 void main_task(void* argument)
 {
-    /* USER CODE BEGIN 5 */
+    (void) argument;
     for (uint8_t i = 0; i < BUZZER_START_SIGNAL_AMOUNT; i++)
     {
         buzzer.set_state(sca::HIGH);
@@ -30,11 +30,11 @@ void main_task(void* argument)
         osDelay(IWDG_DELAY);
     }
     osThreadTerminate(NULL);
-    /* USER CODE END 5 */
 }
 
 void IR_read_task(void* argument)
 {
+    (void) argument;
     while (1)
     {
         if (osSemaphoreAcquire(IRSemHandle, osWaitForever) != osOK) continue;
@@ -62,6 +62,7 @@ void IR_read_task(void* argument)
 
 void HCSR04_read_task(void* argument)
 {
+    (void) (argument);
     while (1)
     {
         int16_t distance = hcsr04.retrieve();
@@ -83,6 +84,7 @@ void HCSR04_read_task(void* argument)
 
 void controller_task(void* argument)
 {
+    (void) argument;
     void* req;
     while (1)
     {

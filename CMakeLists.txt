@@ -17,7 +17,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 
 # Define the build type
-set(CMAKE_BUILD_TYPE "Release")
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Debug")
 endif()
@@ -78,7 +77,6 @@ target_compile_definitions(
              SCA_GPIO SCA_IWDG SCA_PTIMER)
 
 # Add flags
-target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -Wall -Wextra -Wunused -Os)
 
 target_compile_options(
   ${CMAKE_PROJECT_NAME}
@@ -86,14 +84,16 @@ target_compile_options(
           $<$<CONFIG:Debug>:-O0
           -g3
           -Wall
+          -Werror
           -Wextra
           -fstack-protector-strong>
           # Release: optimize for size
           $<$<CONFIG:Release>:-Os
           -DNDEBUG
+          -Werror
           -ffunction-sections
           -Wall
-          -Wextra)
+          -Wextra>)
 
 # Remove wrong libob.a library dependency when using cpp files
 list(REMOVE_ITEM CMAKE_C_IMPLICIT_LINK_LIBRARIES ob)

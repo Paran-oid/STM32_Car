@@ -492,6 +492,7 @@ static void MX_GPIO_Init(void)
 __weak void main_task(void* argument)
 {
     /* USER CODE BEGIN 5 */
+    (void) argument;
     /* USER CODE END 5 */
 }
 
